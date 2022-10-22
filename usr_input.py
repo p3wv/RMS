@@ -1,4 +1,4 @@
-from main import adresy_na_godzine, lista_adresow
+import tables
 from datetime import datetime
 
 
@@ -12,7 +12,7 @@ def user_input():
 
         if na_godzine == 1:
             adres = input("Podaj {}. adres: ".format(liczba_iteracji))
-            lista_adresow.append(adres)
+            tables.lista_adresow.append(adres)
 
         elif na_godzine == 2:
             na_godzine_adres = input('Podaj {}. adres: '. format(liczba_iteracji))
@@ -29,8 +29,24 @@ def user_input():
                 # h, m = map(int, time.split(':'))
                 # godzina = time(hour=h, minute=m)
 
-                adresy_na_godzine.append(tablica_na_godzine)
+                tables.adresy_na_godzine.append(tablica_na_godzine)
 
-        czy_kontynuowac = input("Wprowadzic kolejny adres? (t/n)")
-        if czy_kontynuowac == 't':
-            liczba_iteracji += 1
+        user_continue_clause = 't'
+
+        while user_continue_clause != 'n':
+            user_continue_clause = input("Wprowadzic kolejny adres? (t/n)")
+            if user_continue_clause == 't':
+                czy_kontynuowac = 't'
+                liczba_iteracji += 1
+                break
+
+            elif user_continue_clause != 't' and user_continue_clause != 'n':
+                print("wybierz prawidlowa wartosc!")
+
+            elif user_continue_clause == 'n':
+                czy_kontynuowac = 'n'
+
+    if czy_kontynuowac == 'n':
+        print("do widzenia")
+
+

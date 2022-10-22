@@ -1,4 +1,4 @@
-from main import lista_adresow, adresy_url
+import tables
 import re
 
 
@@ -8,7 +8,7 @@ import re
 def url_parser():
     adresy_spaced = []
 
-    for adresy in lista_adresow:
+    for adresy in tables.lista_adresow:
         adres_z_ampersandem = re.sub(' ', '%20', adresy)
         adresy_spaced.append(adres_z_ampersandem)
 
@@ -20,4 +20,4 @@ def url_parser():
 
     for _ in adresy_z_przecinkami:
         adres_url = re.sub('/', '%2F', _)
-        adresy_url.append(adres_url)
+        tables.adresy_url.append(adres_url)
