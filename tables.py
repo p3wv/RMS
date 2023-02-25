@@ -1,7 +1,7 @@
 import googlemaps
 
 # klucz API
-kluczGM = googlemaps.Client(key='AIzaSyD8i4ysTO8mgS2YyuY-O06EVQCty-ld_Pw')
+kluczGM = googlemaps.Client(key='***')
 
 adresy_url = []
 
