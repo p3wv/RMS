@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map</title>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Addresses</h1>
+    <ul>
+        {% for address in addresses %}
+            <li>{{ address }}</li>
+        {% endfor %}
+    </ul>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            var directionsService = new google.maps.DirectionsService();
+            var directionsRenderer = new google.maps.DirectionsRenderer();
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: {lat: -34.397, lng: 150.644}
+            });
+            directionsRenderer.setMap(map);
+
+            var addresses = JSON.parse('{{ addresses|tojson|safe }}');
+
+            if (addresses.length > 1) {
+                var origin = "Rynek 57, Głogów, PL 67-200";
+                var waypoints = addresses.slice(0, -1).map(function(address) {
+                    return { location: address, stopover: true };
+                });
+                var destination = addresses[addresses.length - 1];
+
+                var request = {
+                    origin: origin,
+                    destination: destination,
+                    waypoints: waypoints,
+                    travelMode: 'DRIVING'
+                };
+
+                directionsService.route(request, function(result, status) {
+                    if (status == 'OK') {
+                        directionsRenderer.setDirections(result);
+                    }
+                });
+            }
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8i4ysTO8mgS2YyuY-O06EVQCty-ld_Pw&callback=initMap" async defer></script>
+</body>
+</html>
