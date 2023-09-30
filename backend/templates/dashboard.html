@@ -7,16 +7,66 @@
 </head>
 
 <style>
-.username-style {
-    color: purple;
-    font-weight: bold;
-    font-style: italic;
-}
+    @import url('https://fonts.googleapis.com/css2?family=Metrophobic&display=swap');
+        
+        body {
+            height: 100%;
+            width: 100%;
+            background-image: url('/static/web-background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .rectangle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 100vh;
+            width: 75vw;
+            background: linear-gradient(180deg, #202020 0%, rgba(217, 217, 217, 0) 200%)
+        }
+
+        a {
+            transition-duration: 0.4s; 
+        }
+        .username-style {
+            color: purple;
+            font-weight: bold;
+            font-style: italic;
+        }   
 </style>
 
 <body>
-    <h1>Hello, <span class="username-style">{{ current_user.username }} </span><span>😊</span></h1>
-    <a href="">Grafik</a><br>
-    <br><a href="{{url_for('logout')}}">Logout</a>
+    <div class="rectangle">
+        <h1 style="text-align: center; color: #C4C4C4; font-size: 54px; font-family: Metrophobic; font-weight: 400; word-wrap: break-word; text-transform: uppercase;">Restaurant Management System</h1>
+
+        <h2 style="text-align: center; color: #F17272; font-size: 60px; font-family: Metrophobic; font-weight: 500; padding: 75px; word-wrap: break-word">Hello, <span class="username-style">{{ current_user.username }} </span><span>😊</span></h2>
+
+        <!-- <div style="text-align: center;">
+            <a href="{{url_for('login')}}" style="display: inline-block; max-width: 350px; background: #F17272; border-radius: 20px; padding: 15px 75px; cursor: pointer; color: white; font-size: 75px; font-family: Metrophobic; font-weight: 400; text-decoration: none; word-wrap: break-word" onmouseover="this.style.color='black'" onmouseout="this.style.color='white'">Log in</a>
+        </div> -->
+        <br>
+
+        <object
+            type="application/pdf"
+            data="backend\templates\Kucharze Wrzesień 2023.pdf"
+            width="500"
+            height="500"
+        >
+        </object>
+        <!-- <a href='grafik.pdf' style="display: flex; justify-content: center; font-size: 52px;">GRAFIK</a> -->
+        <br>
+        <a href="{{url_for('logout')}}" style="display: flex; justify-content: center; align-items: center; color: white; font-size: 30px; font-family: Metrophobic; font-weight: 400; word-wrap: break-word" onmouseover="this.style.color='#F17272'" onmouseout="this.style.color='white'">Logout</a><br>
+
+
+        
+        <!-- <h1></h1>
+        <iframe src="{{ url_for('iframe_content') }}" frameborder="0"></iframe>
+        <p>grafik</p><br> -->
+    
+        
+    </div>
+    
 </body>
 </html>

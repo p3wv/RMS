@@ -5,16 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
 </head>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Metrophobic&display=swap');
+        
+        body {
+            height: 100%;
+            width: 100%;
+            background-image: url('/static/web-background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .rectangle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 100vh;
+            width: 75vw;
+            background: linear-gradient(180deg, #202020 0%, rgba(217, 217, 217, 0) 200%)
+        }
+
+        a {
+            transition-duration: 0.4s; 
+        }
+</style>
 <body>
-    <h1>Register page</h1>
+    <div class="rectangle">
+        <a href="{{url_for('home')}}" style="display: flex; text-align: start; color: #F17272; background-color: #0a0a0a; font-size: 30px; font-family: Metrophobic; font-weight: 500; padding: 10px 35px; text-decoration: none; word-wrap: break-word; max-width: fit-content;">Home</a>
 
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        {{ form.username }}
-        {{ form.password }}
-        {{ form.submit }}
-    </form>
+        <h1 style="text-align: center; color: #F17272; font-size: 60px; font-family: Metrophobic; font-weight: 500; padding: 75px; word-wrap: break-word">REGISTER as a new employee:</h1>
 
-    <a href="{{url_for('login')}}">Registered employee? Login</a>
+        <form method="POST" action="" style="text-align: center; padding: 15px 75px;">
+            {{ form.hidden_tag() }}
+            {{ form.username }}
+            {{ form.password }}
+            {{ form.submit }}
+        </form>
+
+        <h1 style="text-align: center; color: white;  font-size: 40px; font-family: Metrophobic; font-weight: 500; padding: 10px; word-wrap: break-word">Already registered?</h1>
+
+        <div style="text-align: center;">
+            <a href="{{url_for('login')}}" style="display: inline-block; max-width: 350px; text-align: center; border-radius: 20px; padding: 15px 75px; cursor: pointer;color: white ;background-color: #202020; font-size: 30px; font-family: Metrophobic; font-weight: 400; text-decoration: none; word-wrap: break-word" onmouseover="this.style.color='#F17272'" onmouseout="this.style.color='white'">LOGIN</a>
+        </div>
+        
+    </div>
 </body>
 </html>

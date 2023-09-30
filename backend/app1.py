@@ -24,12 +24,11 @@ def url_parser():
         adresy_url.append(adres_url)   
 
 
-@app.route('/api/user_input', methods=['POST'])
+@app.route('/api/user_input', methods=['GET', 'POST'])
 def handle_user_input():
     data = request.get_json()
     command = data.get('command')
     if command == 'user_input':
-        # Place your user_input logic here
         liczba_iteracji = 1
         czy_kontynuowac = 't'
 
@@ -61,18 +60,12 @@ def handle_user_input():
                     czy_kontynuowac = 'n'
         if czy_kontynuowac == 'n':
             print("do widzenia")
-    #     return jsonify({'message': 'User input handled'})
-    # else:
-    #     return jsonify({'message': 'Invalid command'})
         url_parser()
 
         return render_template('map.html', addresses=lista_adresow)
     else:
         return jsonify({'message': 'Invalid command'})
     
-    
-        
-# Define other routes and functions as needed
 
 if __name__ == '__main__':
     app.run()

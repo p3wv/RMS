@@ -77,10 +77,6 @@ def login():
 def dashboard():
      return render_template('dashboard.html')
 
-@app.route('/iframe_content')
-def iframe_content():
-    return render_template('iframe_content.html')
-
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():

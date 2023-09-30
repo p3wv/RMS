@@ -1,15 +1,20 @@
-from flask import Flask, render_template, url_for, redirect
+
+from flask import Flask, render_template, url_for, redirect, request, session
+from flask_socketio import join_room, leave_room, send, SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
+import random
+from string import ascii_uppercase
 
 
 db = SQLAlchemy()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisasecretkey'
+socketio = SocketIO(app)
 bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db.init_app(app)
@@ -77,10 +82,6 @@ def login():
 def dashboard():
      return render_template('dashboard.html')
 
-@app.route('/iframe_content')
-def iframe_content():
-    return render_template('iframe_content.html')
-
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
@@ -102,3 +103,4 @@ def register():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    socketio.run(app, debug=True)

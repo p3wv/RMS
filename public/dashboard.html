@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+
+<style>
+.username-style {
+    color: purple;
+    font-weight: bold;
+    font-style: italic;
+}
+</style>
+
+<body>
+    <h1>Hello, <span class="username-style">{{ current_user.username }} </span><span>😊</span></h1>
+    <a href="">Grafik</a><br>
+    <br><a href="{{url_for('logout')}}">Logout</a>
+</body>
+</html>
