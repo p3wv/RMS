@@ -114,13 +114,151 @@
 
         <br>
 
-        <object
+
+        <div id="myDIV" class="header">
+            <h2>My To Do List</h2>
+            <input type="text" id="myInput" placeholder="Title...">
+            <span onclick="newElement()" class="addBtn">Add</span>
+        </div>
+        
+        <ul id="myUL">
+        <li>Hit the gym</li>
+        <li class="checked">Pay bills</li>
+        <li>Meet George</li>
+        <li>Buy eggs</li>
+        <li>Read a book</li>
+        <li>Organize office</li>
+        </ul>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+            loadTasks();
+            });
+
+            function loadTasks() {
+                const taskList = document.getElementById('myUL');
+                const savedTasks = JSON.parse(localStorage.getItem('sharedTasks')) || [];
+
+                savedTasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.textContent = task;
+                    taskList.appendChild(li);
+                });
+
+                addCloseButtons();
+            }
+
+            function addCloseButtons() {
+                const liList = document.querySelectorAll('ul#myUL li');
+                liList.forEach(li => {
+                    const span = document.createElement('span');
+                    span.className = 'close';
+                    span.appendChild(document.createTextNode('\u00D7'));
+                    li.appendChild(span);
+
+                    span.onclick = function () {
+                        li.style.display = 'none';
+                        saveTasks();
+                    };
+                });
+            }
+
+            function saveTasks() {
+                const taskList = document.getElementById('myUL');
+                const tasks = [];
+
+                taskList.querySelectorAll('li').forEach(li => {
+                tasks.push(li.textContent);
+                });
+
+                localStorage.setItem('sharedTasks', JSON.stringify(tasks));
+            }
+
+            // Create a "close" button and append it to each list item
+            var myNodelist = document.getElementsByTagName("LI");
+            var i;
+            for (i = 0; i < myNodelist.length; i++) {
+            var span = document.createElement("SPAN");
+            var txt = document.createTextNode("\u00D7");
+            span.className = "close";
+            span.appendChild(txt);
+            myNodelist[i].appendChild(span);
+            }
+
+            // Click on a close button to hide the current list item
+            var close = document.getElementsByClassName("close");
+            var i;
+            for (i = 0; i < close.length; i++) {
+            close[i].onclick = function() {
+                var div = this.parentElement;
+                div.style.display = "none";
+            }
+            }
+
+            // Add a "checked" symbol when clicking on a list item
+            var list = document.querySelector('ul');
+            list.addEventListener('click', function(ev) {
+            if (ev.target.tagName === 'LI') {
+                ev.target.classList.toggle('checked');
+            }
+            }, false);
+
+            // Create a new list item when clicking on the "Add" button
+            function newElement() {
+            var li = document.createElement("li");
+            var inputValue = document.getElementById("myInput").value;
+            var t = document.createTextNode(inputValue);
+            li.appendChild(t);
+            if (inputValue === '') {
+                alert("You must write something!");
+            } else {
+                document.getElementById("myUL").appendChild(li);
+            }
+            document.getElementById("myInput").value = "";
+
+            var span = document.createElement("SPAN");
+            var txt = document.createTextNode("\u00D7");
+            span.className = "close";
+            span.appendChild(txt);
+            li.appendChild(span);
+
+            for (i = 0; i < close.length; i++) {
+                close[i].onclick = function() {
+                var div = this.parentElement;
+                div.style.display = "none";
+                }
+            }
+            }
+
+
+            function clockIn() {
+                const clockInTimeInput = document.getElementById("clockInTime");
+                const clockInTime = clockInTimeInput.value;
+
+                if (clockInTime === '') {
+                    alert("Please enter a valid time.");
+                    return;
+                }
+
+                const clockInList = document.getElementById('clockInList');
+                const li = document.createElement('li');
+                li.textContent = `Clock In Time: ${clockInTime}`;
+                clockInList.appendChild(li);
+
+                // You can save the clock-in time to localStorage or send it to the server for further processing.
+
+                clockInTimeInput.value = '';
+            }
+    
+        </script>
+
+        <!-- <object
             type="application/pdf"
             data="backend\templates\Kucharze Wrzesień 2023.pdf"
             width="500"
             height="500"
         >
-        </object>
+        </object> -->
         <!-- <a href='grafik.pdf' style="display: flex; justify-content: center; font-size: 52px;">GRAFIK</a> -->
         <br>
         <a href="{{url_for('logout')}}" style="display: flex; justify-content: center; align-items: center; color: white; font-size: 30px; font-family: Metrophobic; font-weight: 400; word-wrap: break-word" onmouseover="this.style.color='#F17272'" onmouseout="this.style.color='white'">Logout</a><br>
@@ -170,6 +308,22 @@
     
         
     </div>
+
+    <div id="clockInDiv" style="text-align: center; margin-top: 20px;">
+        <label for="clockInTime">Clock In Time:</label>
+        <input type="text" id="clockInTime" placeholder="HH:mm:ss">
+        <button onclick="clockIn()">Clock In</button>
+    </div>
+
+
+
+    <div style="text-align: center; margin-top: 20px;">
+        <h2>Clock-In Times</h2>
+        <ul id="clockInList"></ul>
+    </div>
+
+
+
     
 </body>
 </html>
