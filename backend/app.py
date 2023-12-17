@@ -1,15 +1,21 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
+from flask import flash
+from flask_socketio import SocketIO, emit
 
 
 db = SQLAlchemy()
 app = Flask(__name__)
+socketio = SocketIO(app)
 app.config['SECRET_KEY'] = 'thisisasecretkey'
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600
+app.config['SESSION_PROTECTION'] = 'strong'
 bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db.init_app(app)
@@ -61,6 +67,16 @@ with app.app_context():
 def home():
     return render_template('home.html')
 
+@socketio.on('connect')
+def handle_connect():
+    username = request.args.get('username')
+    emit('user_connected', {'username': username}, broadcast=True)
+
+@socketio.on('message')
+def handle_message(message):
+    username = request.args.get('username')
+    emit('message', {'username': username, 'message': message}, broadcast=True)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -101,4 +117,4 @@ def register():
     return render_template('register.html', form=form)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app)

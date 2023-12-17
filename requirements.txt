@@ -7,3 +7,4 @@ Flask_WTF==1.1.1
 googlemaps==4.10.0
 Requests==2.31.0
 WTForms==3.0.1
+Flask-SocketIO==5.3.4
