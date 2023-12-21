@@ -6,7 +6,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from flask_socketio import SocketIO, emit
-# from werkzeug.urls import url_encode
+from werkzeug.urls import url_encode
 
 
 db = SQLAlchemy()
@@ -114,3 +114,4 @@ def register():
 
 if __name__ == '__main__':
     socketio.run(app)
+    
