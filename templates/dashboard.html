@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+
+    <title>Dashboard</title>
+</head>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Metrophobic&display=swap');
+        
+        body {
+            height: 100%;
+            width: 100%;
+            background-image: url('/static/web-background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .rectangle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 100vh;
+            width: 75vw;
+            background: linear-gradient(180deg, #202020 0%, rgba(217, 217, 217, 0) 200%)
+        }
+
+        a {
+            transition-duration: 0.4s; 
+        }
+        .username-style {
+            color: purple;
+            font-weight: bold;
+            font-style: italic;
+        }   
+        #chat-container {
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 10px;
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        }
+
+        #message-input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        #send-button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #F17272;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #send-button:hover {
+            background-color: white;
+            color: black;
+        }
+
+        #addBtn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #F17272;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #addBtn:hover {
+            background-color: white;
+            color: black;
+        }
+
+        #clock-in-time {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        #clock-in-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+</style>
+
+<body>
+
+    <div class="rectangle">
+
+        <h1 style="text-align: center; color: #C4C4C4; font-size: 54px; font-family: Metrophobic; font-weight: 400; word-wrap: break-word; text-transform: uppercase">Restaurant Management System</h1>
+
+        <div id="clock-in-time">Clock In Time: Not recorded</div>
+
+        <button id="clock-in-btn" onclick="clockIn()">Clock In</button>
+
+        <h2 id="greeting"></h2>
+        <div id="chat-container"></div>
+        <form id="chat-form">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button type="button" id="send-button">Send</button>
+        </form>
+
+        <br>
+
+        <div id="myDIV" class="header">
+            <h2>My To Do List</h2>
+            <input type="text" id="myInput" placeholder="Title...">
+            <button type="button" id="addBtn" onclick="newElement()">Add</button>
+        </div>
+<!--         
+        <ul id="myUL">
+            <li>Hit the gym</li>
+            <li class="checked">Pay bills</li>
+            <li>Meet George</li>
+            <li>Buy eggs</li>
+            <li>Read a book</li>
+            <li>Organize office</li>
+        </ul> -->
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+        loadTasks();
+        });
+
+        function loadTasks() {
+            const taskList = document.getElementById('myUL');
+            const savedTasks = JSON.parse(localStorage.getItem('sharedTasks')) || [];
+
+            savedTasks.forEach(task => {
+                const li = document.createElement('li');
+                li.textContent = task;
+                taskList.appendChild(li);
+            });
+
+            addCloseButtons();
+        }
+
+        function addCloseButtons() {
+            const liList = document.querySelectorAll('ul#myUL li');
+            liList.forEach(li => {
+                const span = document.createElement('span');
+                span.className = 'close';
+                span.appendChild(document.createTextNode('\u00D7'));
+                li.appendChild(span);
+
+                span.onclick = function () {
+                    li.style.display = 'none';
+                    saveTasks();
+                };
+            });
+        }
+
+        function saveTasks() {
+            const taskList = document.getElementById('myUL');
+            const tasks = [];
+
+            taskList.querySelectorAll('li').forEach(li => {
+            tasks.push(li.textContent);
+            });
+
+            localStorage.setItem('sharedTasks', JSON.stringify(tasks));
+        }
+
+        // Create a "close" button and append it to each list item
+        var myNodelist = document.getElementsByTagName("LI");
+        var i;
+        for (i = 0; i < myNodelist.length; i++) {
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+        myNodelist[i].appendChild(span);
+        }
+
+        // Click on a close button to hide the current list item
+        var close = document.getElementsByClassName("close");
+        var i;
+        for (i = 0; i < close.length; i++) {
+        close[i].onclick = function() {
+            var div = this.parentElement;
+            div.style.display = "none";
+        }
+        }
+
+        // Add a "checked" symbol when clicking on a list item
+        var list = document.querySelector('ul');
+        list.addEventListener('click', function(ev) {
+        if (ev.target.tagName === 'LI') {
+            ev.target.classList.toggle('checked');
+        }
+        }, false);
+
+        // Create a new list item when clicking on the "Add" button
+        function newElement() {
+        var li = document.createElement("li");
+        var inputValue = document.getElementById("myInput").value;
+        var t = document.createTextNode(inputValue);
+        li.appendChild(t);
+        if (inputValue === '') {
+            alert("You must write something!");
+        } else {
+            document.getElementById("myUL").appendChild(li);
+        }
+        document.getElementById("myInput").value = "";
+
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        span.className = "close";
+        span.appendChild(txt);
+        li.appendChild(span);
+
+        for (i = 0; i < close.length; i++) {
+            close[i].onclick = function() {
+            var div = this.parentElement;
+            div.style.display = "none";
+            }
+        }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+            const chatContainer = document.getElementById('chat-container');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const chatForm = document.getElementById('chat-form');
+            const greetingElement = document.getElementById('greeting');
+
+            // Get the current user's name
+            const currentUser = "{{ current_user.username }}";
+
+            // Display personalized greeting
+            greetingElement.textContent = `Hello, ${currentUser}! 😊` ;
+            greetingElement.style.color='#C4C4C4';
+            greetingElement.style.fontSize='54px';
+            greetingElement.style.fontFamily='Metrophobic';
+            greetingElement.style.fontWeight='400';
+            greetingElement.style.wordWrap='break-word';
+            greetingElement.style.textTransform='uppercase';
+
+            // Handle send button click
+            sendButton.addEventListener('click', function () {
+                const message = messageInput.value;
+
+                // Display the message in the chat container
+                chatContainer.innerHTML += `<p><strong>${currentUser}:</strong> ${message}</p>`;
+
+                // Emit the message to the server
+                socket.emit('message', { 'username': currentUser, 'message': message });
+
+                // Clear the input field
+                messageInput.value = '';
+            });
+
+            // Handle incoming messages from other users
+            socket.on('message', function (data) {
+                // Display the message in the chat container without "User:"
+                chatContainer.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`;
+            });
+
+            // Inform the server about the user connection
+            socket.emit('connect', {'username': currentUser});
+        });
+
+
+        function clockIn() {
+            var currentTime = new Date();
+            var hours = currentTime.getHours();
+            var minutes = currentTime.getMinutes();
+            var seconds = currentTime.getSeconds();
+
+            // Format the time as HH:MM:SS
+            var formattedTime = padZero(hours) + ":" + padZero(minutes) + ":" + padZero(seconds);
+
+            // Display the clock in time
+            document.getElementById("clock-in-time").textContent = "Clock In Time: " + formattedTime;
+        }
+
+        function padZero(num) {
+            return (num < 10 ? "0" : "") + num;
+        }
+
+        
+
+    </script>
+
+
+        <br>
+        <a href="{{url_for('logout')}}" style="display: flex; justify-content: center; align-items: center; color: white; font-size: 30px; font-family: Metrophobic; font-weight: 400; word-wrap: break-word" onmouseover="this.style.color='#F17272'" onmouseout="this.style.color='white'">Logout</a><br>
+    
+
+</body>
+</html>
