@@ -1,4 +1,4 @@
-from run import db
+from app.RMS import db
 from flask_login import UserMixin
 
 class Permission:
@@ -52,4 +52,7 @@ class Role(db.Model):
         db.session.commit()
 
 class User(UserMixin, db.Model):
-    
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
