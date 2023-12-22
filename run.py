@@ -7,8 +7,10 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from flask_socketio import SocketIO, emit
 
+import os
 
-db = SQLAlchemy()
+
+
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.config['SECRET_KEY'] = 'thisisasecretkey'
@@ -17,7 +19,13 @@ app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 app.config['SESSION_PROTECTION'] = 'strong'
 
 bcrypt = Bcrypt(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] =\
+    'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 db.init_app(app)
 
 login_manager = LoginManager()
