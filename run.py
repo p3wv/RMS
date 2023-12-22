@@ -1,12 +1,11 @@
 from flask import Flask, render_template, url_for, redirect, request, flash, Blueprint
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from flask_socketio import SocketIO, emit
-# from werkzeug.urls import url_encode
 
 
 db = SQLAlchemy()
@@ -16,6 +15,7 @@ app.config['SECRET_KEY'] = 'thisisasecretkey'
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 app.config['SESSION_PROTECTION'] = 'strong'
+
 bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db.init_app(app)
