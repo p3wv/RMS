@@ -1,5 +1,4 @@
 from flask import Flask, render_template, url_for, redirect, request, flash, Blueprint
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -7,10 +6,8 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from flask_socketio import SocketIO, emit
 
-app = Flask(__name__)
 socketio = SocketIO(app)
 bcrypt = Bcrypt(app)
-db = SQLAlchemy(app)
 db.init_app(app)
 
 login_manager = LoginManager()
