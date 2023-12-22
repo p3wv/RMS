@@ -6,6 +6,8 @@
 
 `\path\to\new\virtual\environment\venv\Scripts\activate`
 
+_deactivate the venv when you're done using it with:_ `deactivate`
+
 ## Install:
 
 Run this command to install the required dependencies:
@@ -18,4 +20,4 @@ Run the app:
 
 `python RMS.py`
 
-* DEACTIVATE the venv with: `deactivate`
+
