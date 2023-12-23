@@ -1,6 +1,6 @@
 from crypt import methods
 from flask import render_template, redirect, request, url_for, flash
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 from . import auth
 from ..models import User
 from .forms import LoginForm
@@ -19,3 +19,10 @@ def login():
         flash('Nieprawidłowa nazwa użytkownika lub hasło.')
 
     return render_template('auth/login.html', form=form)
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Zostałeś wylogowany.')
+    return redirect(url_for('main.index'))
