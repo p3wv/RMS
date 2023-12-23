@@ -2,8 +2,9 @@ from crypt import methods
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from . import auth
+from .. import db
 from ..models import User
-from .forms import LoginForm
+from .forms import LoginForm, RegistrationForm
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -19,6 +20,19 @@ def login():
         flash('Nieprawidłowa nazwa użytkownika lub hasło.')
 
     return render_template('auth/login.html', form=form)
+
+@auth.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(email=form.email.data,
+                    username=form.username.data,
+                    password=form.password.data) # type: ignore
+        db.session.add(user)
+        db.session.commit()
+        flash('Zarejestrowano! Teraz się zaloguj')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/register.html', form=form)
 
 @auth.route('/logout')
 @login_required
