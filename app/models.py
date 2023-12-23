@@ -1,4 +1,4 @@
-from app.RMS import db
+from RMS import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager
