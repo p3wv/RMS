@@ -1,6 +1,0 @@
-Drogi {{user.username}},
-Witaj w RMS!
-Aby potwierdzić swoje konto, kliknij w link:
-{{ url_for('auth.confirm', token=token, _external=True) }}
-
-Nie odpowiadaj na powyższą wiadomość
