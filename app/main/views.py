@@ -1,9 +1,11 @@
 from datetime import datetime
-from flask import render_template, session, redirect, url_for
+from flask import flash, render_template, session, redirect, url_for
+from flask_login import login_required
 from . import main
-from .forms import NameForm
+from .forms import EditProfileAdminForm, NameForm
 from .. import db
-from ..models import User
+from ..models import Role, User
+from ..decorators import admin_required
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -26,3 +28,26 @@ def index():
                            form=form, name=session.get('name'),
                            known=session.get('known', False),
                            current_time=datetime.utcnow())
+
+@main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_profile_admin(id):
+    user = User.query.get_or_404(id)
+    form = EditProfileAdminForm(user=user)
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.username = form.username.data
+        # user.confirmed = form.confirmed.data
+        user.role = Role.query.get(form.role.data)
+        user.name = form.name.data
+        db.session.add(user)
+        db.session.commit()
+        flash('Profile has been updated')
+        return redirect(url_for('.user', username=user.username))
+    form.email.data = user.email
+    form.username.data = user.username
+    # form.confirmed.data = user.confirmed
+    form.role.data = user.role_id
+    form.name.data = user.name
+    return render_template('edit_profile.html', form=form, user=user)
