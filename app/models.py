@@ -1,8 +1,6 @@
-from email.policy import default
-from . import db
+from . import db, login_manager
 from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import login_manager
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from flask import current_app
 
@@ -63,6 +61,9 @@ class Role(db.Model):
             db.session.add(role)
         db.session.commit()
 
+    def __repr__(self):
+        return '<Role %r>' % self.name
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -71,6 +72,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
+    name = db.Column(db.String(64))
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -113,8 +115,8 @@ class User(UserMixin, db.Model):
     def is_administrator(self):
         return self.can(Permission.ADMIN)
     
-    def generate_auth_token(self, expiration):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+    def generate_auth_token(self):
+        s = Serializer(current_app.config['SECRET_KEY'])
         return s.dumps({'id': self.id}).decode('utf-8') # type: ignore
     
     @staticmethod

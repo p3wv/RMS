@@ -10,7 +10,7 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     RMS_MAIL_SUBJECT_PREFIX = '[RMS]'
-    RMS_MAIL_SENDER = 'RMS Admin <flasky@example.com>'
+    RMS_MAIL_SENDER = 'RMS Admin <RMS@example.com>' # TODO: insert email address
     RMS_ADMIN = os.environ.get('RMS_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
