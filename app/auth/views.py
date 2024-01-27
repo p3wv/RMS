@@ -22,7 +22,7 @@ def before_request():
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
-    return render_template('auth/unconfirmed.html')
+    return render_template('auth/email/unconfirmed.html')
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -39,20 +39,27 @@ def login():
 
     return render_template('auth/login.html', form=form)
 
+import logging
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        logging.info('Form is validated')
         user = User(email=form.email.data,
                     username=form.username.data,
                     password=form.password.data) # type: ignore
         db.session.add(user)
         db.session.commit()
-        token = user.generate_confirmation_token()
-        send_email(user.email, 'Potwierdź swoje konto',
-                   'auth/email/confirm', user=user, token=token)
-        flash('Na podany adres e-mail wysłano prośbę o potwierdzenie konta')
-        return redirect(url_for('main.index'))
+        logging.info('User added to the database')
+        try:
+            token = user.generate_confirmation_token()
+            send_email(user.email, 'Potwierdź swoje konto',
+                    'auth/email/confirm', user=user, token=token)
+            flash('Na podany adres e-mail wysłano prośbę o potwierdzenie konta')
+            return redirect(url_for('main.index'))
+        except Exception as e:
+            logging.error(f'Error sending email: {e}')
     return render_template('auth/register.html', form=form)
 
 @auth.route('/logout')
@@ -77,10 +84,13 @@ def confirm(token):
 @auth.route('/confirm')
 @login_required
 def resend_confirmation():
-    token = current_user.generate_confirmation_token()
-    send_email(current_user.email, 'Potwierdź swoje konto',
-               'auth/email/confirm', user=current_user, token=token)
-    flash('Nowy link potwierdzający został wysłany na podany adres e-mail')
+    try:
+        token = current_user.generate_confirmation_token()
+        send_email(current_user.email, 'Potwierdź swoje konto',
+                'auth/email/confirm', user=current_user, token=token)
+        flash('Nowy link potwierdzający został wysłany na podany adres e-mail')
+    except Exception as e:
+        print(f"Error sending email: {e}")
     return redirect(url_for('main.index'))
 
 @auth.route('/change-password', methods=['GET', 'POST'])
@@ -104,7 +114,7 @@ def password_reset_request():
         return redirect(url_for('main.index'))
     form = PasswordResetRequestForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data.lower()).first()
+        user = User.query.filter_by(email=form.email.data.lower()).first() # type: ignore
         if user:
             token = user.generate_reset_token()
             send_email(user.email, 'Reset your password',
@@ -134,7 +144,7 @@ def change_email_request():
     form = ChangeEmailForm()
     if form.validate_on_submit():
         if current_user.verify_password(form.password.data):
-            new_email = form.email.data.lower()
+            new_email = form.email.data.lower() # type: ignore
             token = current_user.generate_email_change_token(new_email)
             send_email(new_email, 'Confirm your email address',
                        'auth/email/change_email',

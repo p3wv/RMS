@@ -77,25 +77,29 @@ class User(UserMixin, db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == current_app.config['FLASKY_ADMIN']:
+            if self.email == current_app.config['RMS_ADMIN']:
                 self.role = Role.query.filter_by(name='Administrator').first()
                 if self.role is None:
                     self.role = Role.query.filter_by(default=True).first()
 
-    def generate_confirmation_token(self, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration) # type: ignore
-        return s.dumps({'confirm': self.id}).decode('utf-8') # type: ignore
+    def generate_confirmation_token(self):
+        s = Serializer(current_app.config['SECRET_KEY']) 
+        return s.dumps({'confirm': self.id})
     
     def confirm(self, token):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token.encode('utf-8'))
-        except:
+        except Exception as e:
+            print(f"Error decoding token: {e}")
             return False
         if data.get('confirm') != self.id:
+            print("User ID does not match")
             return False
         self.confirmed = True
         db.session.add(self)
+        db.session.commit()
+        print("User confirmed successfully")
         return True
 
     @property

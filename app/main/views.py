@@ -1,15 +1,18 @@
-# from datetime import datetime
+from datetime import datetime
 from flask import flash, render_template, session, redirect, url_for, request, current_app, make_response, abort
 from flask_login import login_required, current_user
+
+from app.email import send_email
 from . import main
-from .forms import EditProfileAdminForm
+from .forms import EditProfileAdminForm, NameForm
 from .. import db
 from ..models import Role, User, Permission
 from ..decorators import admin_required, permission_required
+import app
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    # form = NameForm()
+    form = NameForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.name.data).first()
         if user is None:

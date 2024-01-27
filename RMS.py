@@ -118,7 +118,10 @@ if os.environ.get('FLASK_COVERAGE'):
     COV = coverage.coverage(branch=True, include='app/*')
     COV.start()
 
+
 app = create_app()
+with app.app_context():
+    db.create_all()
 migrate = Migrate(app, db)
 
 @app.shell_context_processor
