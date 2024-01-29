@@ -10,6 +10,11 @@ class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+class EditProfileForm(FlaskForm):
+    name = StringField('Real name', validators=[Length(0, 64)])
+    location = StringField('Location', validators=[Length(0, 64)])
+    submit = SubmitField('Submit')
+
 class EditProfileAdminForm(FlaskForm):
     email = StringField('E-mail', validators=[DataRequired(), Length(1, 64), Email()])
     username = StringField('Nazwa użytkownika', validators=[
