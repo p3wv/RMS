@@ -20,8 +20,8 @@ def index():
             db.session.add(user)
             db.session.commit()
             session['known'] = False
-            if app.config['FLASKY_ADMIN']:
-                send_email(app.config['FLASKY_ADMIN'], 'New User',
+            if app.config['RMS_ADMIN']:
+                send_email(app.config['RMS_ADMIN'], 'New User',
                            'mail/new_user', user=user)
         else:
             session['known'] = True
@@ -41,7 +41,7 @@ def edit_profile_admin(id):
     if form.validate_on_submit():
         user.email = form.email.data
         user.username = form.username.data
-        # user.confirmed = form.confirmed.data
+        user.confirmed = form.confirmed.data
         user.role = Role.query.get(form.role.data)
         user.name = form.name.data
         db.session.add(user)
@@ -50,7 +50,7 @@ def edit_profile_admin(id):
         return redirect(url_for('.user', username=user.username))
     form.email.data = user.email
     form.username.data = user.username
-    # form.confirmed.data = user.confirmed
+    form.confirmed.data = user.confirmed
     form.role.data = user.role_id
     form.name.data = user.name
     return render_template('edit_profile.html', form=form, user=user)

@@ -1,21 +1,22 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
+# dotenv_path = '/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/vars.env'
+from dotenv import load_dotenv
+load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess literal string of text'
+    SECRET_KEY = os.getenv('SECRET_KEY') or 'hard to guess literal string of text'
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = '465'
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
-    MAIL_USERNAME = 'tornsouled@gmail.com'
-    # os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = 'yvsz qedn riwf wrsr'
-    # os.environ.get('MAIL_PASSWORD')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')    
     MAIL_SUPPRESS_SEND = False
     TESTING = False
     RMS_MAIL_SUBJECT_PREFIX = '[RMS]'
-    RMS_MAIL_SENDER = 'RMS Admin tornsouled@gmail.com'
-    RMS_ADMIN = os.environ.get('RMS_ADMIN')
+    RMS_MAIL_SENDER = 'Restaurant Management System Admin tornsouled@gmail.com'
+    RMS_ADMIN = os.getenv('RMS_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_DEBUG = True
 
