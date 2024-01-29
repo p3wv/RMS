@@ -7,7 +7,7 @@ from . import main
 from .forms import EditProfileAdminForm, NameForm
 from .. import db
 from ..models import Role, User, Permission
-from ..decorators import admin_required, permission_required
+from ..decorators import admin_required
 import app
 
 @main.route('/', methods=['GET', 'POST'])

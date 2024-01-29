@@ -1,8 +1,8 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
-# dotenv_path = '/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/vars.env'
 from dotenv import load_dotenv
-load_dotenv()
+dotenv_path = os.path.join(basedir, '.env')
+load_dotenv(dotenv_path)
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY') or 'hard to guess literal string of text'
@@ -15,7 +15,7 @@ class Config:
     MAIL_SUPPRESS_SEND = False
     TESTING = False
     RMS_MAIL_SUBJECT_PREFIX = '[RMS]'
-    RMS_MAIL_SENDER = 'Restaurant Management System Admin tornsouled@gmail.com'
+    RMS_MAIL_SENDER = 'Restaurant Management System Admin'
     RMS_ADMIN = os.getenv('RMS_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_DEBUG = True
