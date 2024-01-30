@@ -13,7 +13,8 @@
     }
 
     .container {
-        background-color: white;
+        background: linear-gradient(180deg, #202020 0%, rgba(217, 217, 217, 0) 200%);
+        color: rgb(163, 50, 50);
     }
 </style>
 {% endblock %}
@@ -38,9 +39,6 @@
                 {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% if current_user.can(Permission.MODERATE) %}
-                <li><a href="{{ url_for('main.moderate') }}">Moderate Comments</a></li>
-                {% endif %}
                 {% if current_user.is_authenticated %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
