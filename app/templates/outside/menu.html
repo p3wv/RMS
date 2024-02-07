@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Our Menu{% endblock %}
+
+{% block page_content %}
+
+<header>
+    <h1>Restaurant Name</h1>
+    <p>Welcome to our menu!</p>
+</header>
+
+<section id="menu">
+    <article class="menu-item">
+        <h2>Appetizers</h2>
+        <ul>
+            <li>
+                <h3>Garlic Bread</h3>
+                <p>Crusty bread with garlic butter</p>
+                <span>$5.99</span>
+            </li>
+            <li>
+                <h3>Bruschetta</h3>
+                <p>Tomato, basil, and garlic on grilled bread</p>
+                <span>$7.99</span>
+            </li>
+            <!-- Add more appetizers here -->
+        </ul>
+    </article>
+
+    <article class="menu-item">
+        <h2>Main Courses</h2>
+        <ul>
+            <li>
+                <h3>Spaghetti Bolognese</h3>
+                <p>Classic Italian meat sauce</p>
+                <span>$12.99</span>
+            </li>
+            <li>
+                <h3>Chicken Alfredo</h3>
+                <p>Grilled chicken with creamy Alfredo sauce</p>
+                <span>$14.99</span>
+            </li>
+            <!-- Add more main courses here -->
+        </ul>
+    </article>
+
+    <!-- Add more sections for other categories like desserts, drinks, etc. -->
+
+</section>
+
+<footer>
+    <p>&copy; 2024 Restaurant Name. All rights reserved.</p>
+</footer>
+
+{% endblock %}

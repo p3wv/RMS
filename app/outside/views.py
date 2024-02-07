@@ -4,4 +4,4 @@ from . import outside
 
 @outside.route('/outside')
 def outside_index():
-    return render_template('menu.html')
+    return render_template('outside/menu.html')
