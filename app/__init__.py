@@ -39,7 +39,7 @@ def create_app():
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
 
-    from .outside import outside as outside_blueprint
-    app.register_blueprint(outside_blueprint, url_prefix='/outside')
+    # from .outside import outside as outside_blueprint
+    # app.register_blueprint(outside_blueprint, url_prefix='/outside')
 
     return app

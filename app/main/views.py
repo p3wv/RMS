@@ -32,6 +32,18 @@ def index():
                            known=session.get('known', False),
                            current_time=datetime.utcnow())
 
+@main.route('/menu')
+def menu():
+    return render_template('menu.html')
+
+@main.route('/cart')
+def cart():
+    return render_template('cart.html')
+
+@main.route('/order_confirmation')
+def order_confirmation():
+    return render_template('order_confirmation.html')
+
 @main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()

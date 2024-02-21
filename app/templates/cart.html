@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Your Cart{% endblock %}
+
+{% block page_content %}
+
+<head>
+    <script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z"></script>
+    <style>
+        .cart-item {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .cart-item img {
+            max-width: 100%;
+            height: auto;
+            width: 200px;
+            height: 150px;
+        }
+
+        .quantity-input {
+            width: 30px;
+            text-align: center;
+            margin: 0 10px;
+        }
+
+
+        #checkout-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <h1>Your order</h1>
+
+    <div id="cart-list"></div>
+
+    <button id="checkout-button" onclick="checkout()">Proceed to Checkout</button>
+
+    <script>
+        function displayCart() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+
+            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            let groupedItems = groupIdenticalItems(cartItems);
+
+            groupedItems.forEach((group, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+
+                const itemImage = document.createElement('img');
+                itemImage.src = group[0].image;
+                itemImage.alt = group[0].name;
+
+                const itemName = document.createElement('p');
+                itemName.textContent = `${group[0].name} - $${group[0].price}`;
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.className = 'quantity-input';
+                quantityInput.value = group.length;
+                quantityInput.min = '1';
+                quantityInput.addEventListener('change', (event) => updateQuantity(event, index));
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.addEventListener('click', () => removeItem(index));
+
+                cartItem.appendChild(itemImage);
+                cartItem.appendChild(itemName);
+                cartItem.appendChild(quantityInput);
+                cartItem.appendChild(removeButton);
+                cartList.appendChild(cartItem);
+            });
+        }
+
+        function initializeCheckoutButton() {
+            document.getElementById('checkout-button').addEventListener('click', function () {
+                window.location.href = 'order_confirmation';
+            });
+        }
+
+        function groupIdenticalItems(items) {
+            let groupedItems = [];
+            
+            items.forEach(item => {
+                const existingGroup = groupedItems.find(group => isIdentical(group[0], item));
+
+                if (existingGroup) {
+                    existingGroup.push(item);
+                } else {
+                    groupedItems.push([item]);
+                }
+            });
+
+            return groupedItems;
+        }
+
+        function isIdentical(item1, item2) {
+            return item1.name === item2.name && item1.price === item2.price;
+        }
+
+        function updateQuantity(event, index) {
+            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            let groupedItems = groupIdenticalItems(cartItems);
+
+            
+            groupedItems[index] = Array(Number(event.target.value)).fill(groupedItems[index][0]);
+
+            
+            let updatedCart = groupedItems.flat();
+
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+            displayCart();
+        }
+
+
+        function initializePayPalButton() {
+            paypal.Buttons({
+                createOrder: function (data, actions) {
+                    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                    let totalAmount = cartItems.reduce((sum, item) => sum + item.price, 0);
+
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: totalAmount.toFixed(2),
+                                currency_code: 'USD'
+                            }
+                        }]
+                    });
+                },
+                onApprove: function (data, actions) {
+                    return actions.order.capture().then(function (details) {
+                        localStorage.removeItem('cart');
+                        displayCart(); 
+                        alert('Transaction completed by ' + details.payer.name.given_name);
+                    });
+                },
+                onError: function (err) {
+                    console.error('Error:', err);
+                    alert('There was an error processing the payment. Please try again.');
+                }
+            }).render('#paypal-button-container');
+        }
+
+        function removeItem(index) {
+            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            let groupedItems = groupIdenticalItems(cartItems);
+
+            groupedItems.splice(index, 1);
+
+            let updatedCart = groupedItems.flat();
+
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+            displayCart();
+        }
+
+        displayCart();
+        initializeCheckoutButton();
+    </script>
+
+</body>
+
+{% endblock %}
