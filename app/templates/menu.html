@@ -166,7 +166,6 @@
             }
         }
 
-        // Function to handle page click event
         function onPageClick(page) {
             currentPage = page;
             displayMenu(currentPage);
@@ -181,7 +180,6 @@
             }, 2000);
         }
 
-        // Function to add item to cart
         function addToCart(item) {
             let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
             cartItems.push(item);
@@ -190,7 +188,6 @@
             showNotificationPopup();
         }
 
-        // Function to update cart count on the page
         function updateCartCount() {
             let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
             cartCount = cartItems.length;

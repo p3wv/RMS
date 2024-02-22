@@ -63,9 +63,6 @@
     <script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z&currency=USD" data-sdk-integration-source="button-factory"></script>
 
     <script>
-        // function displayCart() {
-        //     // ... (your existing code)
-        // }
 
         function initializePayPalButton() {
             paypal.Buttons({
@@ -97,14 +94,11 @@
         }
 
         function pay() {
-            // You can add additional logic here if needed before initiating PayPal payment
             document.getElementById('paypal-button-container').scrollIntoView();
             initializePayPalButton();
         }
 
-        // ... (your existing code)
-
-        // displayCart();
+        
     </script>
 
 </body>
