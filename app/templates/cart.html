@@ -63,7 +63,6 @@
             let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
             let totalAmount = calculateTotalAmount(cartItems);
 
-            // Send a POST request to the server to save the total amount
             fetch('/save_total_amount', {
                 method: 'POST',
                 headers: {
@@ -78,7 +77,6 @@
                 return response.json();
             })
             .then(data => {
-                // Redirect to the order confirmation page
                 window.location.href = '/order_confirmation';
             })
             .catch(error => {
