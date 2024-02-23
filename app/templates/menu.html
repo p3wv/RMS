@@ -3,91 +3,89 @@
 {% block title %}Menu{% endblock %}
 
 {% block page_content %}
-    <head>
-        <style>
-            .menu-item {
-                margin-bottom: 20px;
-                text-align: center;
-                font-weight: bold;
-                color: #4CAF50;
-            }
-
-            .menu-item img {
-                max-width: 100%;
-                height: auto;
-                width: 200px;
-                height: 150px;
-            }
-
-            .pagination {
-                display: flex;
-                justify-content: center;
-                list-style: none;
-                padding: 0;
-            }
-
-            .pagination li {
-                margin-right: 10px;
-                cursor: pointer;
-                font-size: 30px;
-                margin-bottom: 10px;
-                /* text-decoration: underline; */
-                background-color: transparent;
-                padding: 1%;
-                border-radius: 30%;
-                
-            }
-
-            .pagination li:hover {
-                cursor: pointer;
-                color: aliceblue;
-                /* font-size: 40px; */
-            }
-
-            .pagination :active {
-                color: aliceblue;
-            }
-
-            .add-to-cart-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            }
-
-            #cart {
-                margin-top: 20px;
-                text-align: center;
-                font-size: large;
-            }
-
-            #cart-count {
-            font-weight: bold;
-            color: red;
-            font-size: large;
-            
-            }
-
-            .notification-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #4CAF50; /* Green background */
-            color: white; /* White text */
+    <style>
+        .menu-item {
+            margin-bottom: 20px;
             text-align: center;
-            padding: 16px;
-            border-radius: 10px;
-            z-index: 1;
-            width: 300px;
-            max-width: 80%;
-            }
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .menu-item img {
+            max-width: 100%;
+            height: auto;
+            width: 200px;
+            height: 150px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 30px;
+            margin-bottom: 10px;
+            /* text-decoration: underline; */
+            background-color: transparent;
+            padding: 1%;
+            border-radius: 30%;
             
-        </style>
-    </head>
+        }
+
+        .pagination li:hover {
+            cursor: pointer;
+            color: aliceblue;
+            /* font-size: 40px; */
+        }
+
+        .pagination :active {
+            color: aliceblue;
+        }
+
+        .add-to-cart-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        }
+
+        #cart {
+            margin-top: 20px;
+            text-align: center;
+            font-size: large;
+        }
+
+        #cart-count {
+        font-weight: bold;
+        color: red;
+        font-size: large;
+        
+        }
+
+        .notification-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #4CAF50; /* Green background */
+        color: white; /* White text */
+        text-align: center;
+        padding: 16px;
+        border-radius: 10px;
+        z-index: 1;
+        width: 300px;
+        max-width: 80%;
+        }
+            
+    </style>
 
     <h1>Restaurant Menu</h1>
 
@@ -96,14 +94,12 @@
 
     <div id="menu-list"></div>
     <ul class="pagination" id="pagination">
-        <li>1</li>
-        <li>2</li>
     </ul>
 
     
 
     <div id="notification-popup" class="notification-popup">
-        Item has been added
+        Item has been added to your order
     </div>
     
 
@@ -195,6 +191,12 @@
             cartCountElement.textContent = cartCount.toString();
         }
 
+        function clearCart() {
+            sessionStorage.removeItem('cart');
+            updateCartCount();
+        }
+
+        clearCart();
 
         displayMenu(currentPage);
         updateCartCount();

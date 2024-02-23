@@ -6,6 +6,13 @@ from wtforms import ValidationError
 from ..models import Role, User
 
 
+class OrderForm(FlaskForm):
+    name = StringField('Name visible on your order:', validators=[DataRequired()])
+    address = StringField('Delivery address:', validators=[DataRequired(),
+                                                          Length(6, 20)] )
+    email = email = StringField('Your e-mail (we will use it for contact purposes only)', validators=[DataRequired(), Length(1, 64), Email()])
+    
+
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
     submit = SubmitField('Submit')

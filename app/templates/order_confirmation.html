@@ -1,32 +1,18 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Order Confirmation{% endblock %}
 
 {% block page_content %}
-<head>
     <style>
-        .cart-item {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .cart-item img {
-            max-width: 100%;
-            height: auto;
-            width: 200px;
-            height: 150px;
-        }
-
         #delivery-form {
             max-width: 400px;
             margin: 20px auto;
         }
 
         #paypal-button-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
+            display: grid;
+            padding-top: 20px;
         }
 
         #pay-button {
@@ -37,54 +23,71 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 20px;
+            font-weight: 600;
+        }
+
+        #pay-button:hover {
+            color: red;
+        }
+
+        #pay-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #pay-button:hover:disabled {
+            color: #333;
+        }
+
+        .col-md-4 {
+            display: grid;
+            padding: 10px;
+        }
+
+        #total_amount {
+            font-weight: 600;
+            font-size: 24px;
         }
     </style>
-</head>
 
-<body>
-    <h1>Order Confirmation</h1>
+    <script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z&currency=USD"></script>
 
-    <div id="cart-list"></div>
+    <h1>Order Confirmation:</h1>
 
-    <form id="delivery-form">
-        <label for="address">Delivery Address:</label>
-        <textarea id="address" name="address" rows="1" required></textarea>
-        <br>
-        <label for="name">Name:</label>
-        <textarea id="name" name="address" rows="1" required></textarea>
-        <br>
-        <label for="surname">Surname:</label>
-        <textarea id="surname" name="address" rows="1" required></textarea>
-    </form>
-
-    <div id="paypal-button-container"></div>
-    <button id="pay-button" onclick="pay()">Pay with PayPal</button>
-
-    <script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z&currency=USD" data-sdk-integration-source="button-factory"></script>
+    <div class="col-md-4">
+        {{ wtf.quick_form(form, id='order-form') }}
+        <p id="total_amount">Total Amount: ${{ total_amount }}</p>
+        <button type="submit" id="pay-button" onclick="startPayPalTransaction()" disabled>Pay with PayPal</button>
+    </div>
 
     <script>
+        let paypalButtonClicked = false;
 
-        function initializePayPalButton() {
+        function startPayPalTransaction() {
+            if (paypalButtonClicked) {
+                return;
+            }
+
+            paypalButtonClicked = true;
+
+            let totalAmount = ('{{ total_amount }}');
+            if (!totalAmount) {
+                console.error('Total amount not found.');
+                return;
+            }
             paypal.Buttons({
                 createOrder: function (data, actions) {
-                    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-                    let totalAmount = cartItems.reduce((sum, item) => sum + item.price, 0);
-
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: totalAmount.toFixed(2),
+                                value: totalAmount,
                                 currency_code: 'USD'
                             }
                         }]
                     });
                 },
                 onApprove: function (data, actions) {
-                    return actions.order.capture().then(function (details) {
-                        localStorage.removeItem('cart');
-                        displayCart(); 
-                        alert('Transaction completed by ' + details.payer.name.given_name);
-                    });
+                    alert('Payment completed successfully!');
                 },
                 onError: function (err) {
                     console.error('Error:', err);
@@ -93,14 +96,16 @@
             }).render('#paypal-button-container');
         }
 
-        function pay() {
-            document.getElementById('paypal-button-container').scrollIntoView();
-            initializePayPalButton();
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('order-form');
+            const payButton = document.getElementById('pay-button');
 
-        
+            form.addEventListener('input', function () {
+                payButton.disabled = !form.checkValidity();
+            });
+
+            payButton.disabled = !form.checkValidity();
+        });
     </script>
-
-</body>
 
 {% endblock %}

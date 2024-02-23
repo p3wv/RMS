@@ -1,17 +1,21 @@
 from datetime import datetime
-from flask import flash, render_template, session, redirect, url_for, request, current_app, make_response, abort
+from flask import flash, jsonify, render_template, session, redirect, url_for, request, current_app, make_response, abort
 from flask_login import login_required, current_user
 
 from app.email import send_email
 from . import main
-from .forms import EditProfileForm, EditProfileAdminForm, NameForm
+from .forms import EditProfileForm, EditProfileAdminForm, NameForm, OrderForm
 from .. import db
 from ..models import Role, User, Permission
 from ..decorators import admin_required
 import app
 
-@main.route('/', methods=['GET', 'POST'])
+@main.route('/')
 def index():
+    return render_template('index.html')
+
+@main.route('/RMS', methods=['GET', 'POST'])
+def RMS_index():
     form = NameForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.name.data).first()
@@ -26,8 +30,8 @@ def index():
         else:
             session['known'] = True
         session['name'] = form.name.data
-        return redirect(url_for('.index'))
-    return render_template('index.html',
+        return redirect(url_for('.RMS_index'))
+    return render_template('RMS_index.html',
                            form=form, name=session.get('name'),
                            known=session.get('known', False),
                            current_time=datetime.utcnow())
@@ -36,13 +40,47 @@ def index():
 def menu():
     return render_template('menu.html')
 
-@main.route('/cart')
+@main.route('/cart', methods=['GET', 'POST'])
 def cart():
     return render_template('cart.html')
 
+total_amount_storage = None
+
+@main.route('/save_total_amount', methods=['POST'])
+def save_total_amount():
+    global total_amount_storage
+
+    try:
+        data = request.get_json()
+        total_amount = data.get('totalAmount')
+
+        # Assuming you want to store the total amount globally on the server
+        total_amount_storage = total_amount
+
+        return jsonify({'success': True})
+    except Exception as e:
+        print('Error:', e)
+        return jsonify({'success': False, 'error': 'An error occurred while saving the total amount'})
+
+
+def calculate_total_amount(cart_items):
+    return sum(item['price'] for item in cart_items)
+
 @main.route('/order_confirmation')
 def order_confirmation():
-    return render_template('order_confirmation.html')
+    global total_amount_storage
+    total_amount = total_amount_storage
+    if total_amount is None:
+        flash('Total amount not found')
+        redirect(url_for('.cart'))
+    form = OrderForm()
+    if form.validate_on_submit():
+        redirect(url_for('.ordered'))
+    return render_template('order_confirmation.html', form=form, total_amount=total_amount)
+
+@main.route('/ordered')
+def ordered():
+    return render_template('ordered.html')
 
 @main.route('/user/<username>')
 def user(username):
