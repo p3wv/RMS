@@ -58,6 +58,7 @@
         {{ wtf.quick_form(form, id='order-form') }}
         <p id="total_amount">Total Amount: ${{ total_amount }}</p>
         <button type="submit" id="pay-button" onclick="startPayPalTransaction()" disabled>Pay with PayPal</button>
+        <div id="paypal-button-container"></div>
     </div>
 
     <script>
