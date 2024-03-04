@@ -1,4 +1,6 @@
+from ctypes import addressof
 from datetime import datetime
+import email
 from flask import flash, jsonify, render_template, session, redirect, url_for, request, current_app, make_response, abort
 from flask_login import login_required, current_user
 
@@ -6,7 +8,7 @@ from app.email import send_email
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, NameForm, OrderForm
 from .. import db
-from ..models import Role, User, Permission
+from ..models import Role, User, Permission, Order
 from ..decorators import admin_required
 import app
 
@@ -69,13 +71,15 @@ def calculate_total_amount(cart_items):
 
 
 
-@main.route('/order_confirmation')
+@main.route('/order_confirmation', methods=['GET', 'POST'])
 def order_confirmation():
     global total_amount_storage
     total_amount = total_amount_storage
+
     if total_amount is None:
         flash('Total amount not found')
         redirect(url_for('.cart'))
+        
     form = OrderForm()
 
 
@@ -83,7 +87,18 @@ def order_confirmation():
 
 
     if form.validate_on_submit():
+        order = Order(
+            # name=form.name.data,
+            # address=form.address.data,
+            # email=form.email.data
+        )
+
+        db.session.add(order)
+        db.session.commit()
+
+        flash('Order placed successfully!', 'success')
         redirect(url_for('.ordered'))
+        
     return render_template('order_confirmation.html', form=form, total_amount=total_amount)
 
 @main.route('/ordered')
