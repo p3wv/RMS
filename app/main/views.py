@@ -66,6 +66,9 @@ def save_total_amount():
 def calculate_total_amount(cart_items):
     return sum(item['price'] for item in cart_items)
 
+
+
+
 @main.route('/order_confirmation')
 def order_confirmation():
     global total_amount_storage
@@ -74,6 +77,11 @@ def order_confirmation():
         flash('Total amount not found')
         redirect(url_for('.cart'))
     form = OrderForm()
+
+
+    # TODO: db
+
+
     if form.validate_on_submit():
         redirect(url_for('.ordered'))
     return render_template('order_confirmation.html', form=form, total_amount=total_amount)
