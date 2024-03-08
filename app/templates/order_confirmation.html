@@ -7,7 +7,7 @@
     <style>
         #delivery-form {
             max-width: 400px;
-            margin: 20px auto;
+            margin: 20px;
         }
 
         #paypal-button-container {
@@ -42,26 +42,71 @@
         .col-md-4 {
             display: grid;
             padding: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .center-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #total_amount {
             font-weight: 600;
             font-size: 24px;
         }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            padding-right: 60px;
+            padding-left: 60px;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            background-color: transparent; 
+            z-index: 1000;
+        }
+
+        .button {
+            font-weight: 400;
+            font-size: 30px;
+            padding: 12px 30px;
+            color: red;
+            background-color: black;
+            text-decoration: none;
+            transition: background-color 0.3s;  
+        }
+
+        .button:hover {
+            background-color: #333;  
+            color: rgb(0, 255, 0);  
+            text-decoration: none;
+        }
+
     </style>
 
     <script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z&currency=USD"></script>
 
-    <h1>Order Confirmation:</h1>
+    <div class="center-container">
+        <div class="col-md-4 mx-auto">
+            <h1>Order Confirmation:</h1>
+            {{ wtf.quick_form(form, id='order-form') }}
+            <p id="total_amount">Total Amount: ${{ total_amount }}</p>
+            <button type="submit" id="pay-button" onclick="startPayPalTransaction()" disabled>Pay with PayPal</button>
+            <div id="paypal-button-container"></div>
+        </div>
+    </div>
 
-    <div class="col-md-4">
-        {{ wtf.quick_form(form, id='order-form') }}
-        <p id="total_amount">Total Amount: ${{ total_amount }}</p>
-        <button type="submit" id="pay-button" onclick="startPayPalTransaction()" disabled>Pay with PayPal</button>
-        <div id="paypal-button-container"></div>
+    <div class="buttons">
+        <a href="{{ url_for('main.cart') }}" class="button" ><span>&#8678;</span> BACK TO CART</a>
     </div>
 
     <script>
+
         let paypalButtonClicked = false;
 
         function startPayPalTransaction() {

@@ -98,7 +98,6 @@ def order_confirmation():
 
         flash('Order placed successfully!', 'success')
         redirect(url_for('.ordered'))
-        
     return render_template('order_confirmation.html', form=form, total_amount=total_amount)
 
 @main.route('/ordered')
