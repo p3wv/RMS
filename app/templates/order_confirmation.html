@@ -1,15 +1,10 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Order Confirmation{% endblock %}
+{% block title %}Finish your order{% endblock %}
 
 {% block page_content %}
     <style>
-        #delivery-form {
-            max-width: 400px;
-            margin: 20px;
-        }
-
         #paypal-button-container {
             display: grid;
             padding-top: 20px;
@@ -18,12 +13,13 @@
         #pay-button {
             background-color: #4CAF50;
             color: white;
-            padding: 10px;
+            padding: 8px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 20px;
-            font-weight: 600;
+            font-weight: 400;
+            font-size: 26px;
         }
 
         #pay-button:hover {
@@ -32,6 +28,7 @@
 
         #pay-button:disabled {
             background-color: #ccc;
+            color: #333;
             cursor: not-allowed;
         }
 
@@ -52,9 +49,14 @@
             justify-content: center;
         }
 
-        #total_amount {
-            font-weight: 600;
-            font-size: 24px;
+        h1 {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom-color: rgba(255, 255, 255, 0.322);
+            border-bottom-style: groove;
+            font-weight: 380;
+            font-size: 40px;
+            width: 475px;
         }
 
         .buttons {
@@ -87,16 +89,23 @@
             text-decoration: none;
         }
 
+        #order-form {
+            color: rgba(255, 255, 255, 0.686);
+            font-style: italic;
+            font-size: 16px;
+            padding: 4%;
+        }
+
     </style>
 
     <script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z&currency=USD"></script>
 
     <div class="center-container">
         <div class="col-md-4 mx-auto">
-            <h1>Order Confirmation:</h1>
+            <h1>Help us handle the delivery:</h1>
+            <br>
             {{ wtf.quick_form(form, id='order-form') }}
-            <p id="total_amount">Total Amount: ${{ total_amount }}</p>
-            <button type="submit" id="pay-button" onclick="startPayPalTransaction()" disabled>Pay with PayPal</button>
+            <button type="submit" id="pay-button" onclick="startPayPalTransaction()" disabled>Pay ${{ total_amount }} (PayPal)</button>
             <div id="paypal-button-container"></div>
         </div>
     </div>

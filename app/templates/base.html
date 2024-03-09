@@ -28,11 +28,18 @@
         font-size: 12px;
     }
 
-    /* .navbar {
-        position: fixed;
-        top: 0;
-        right: 0;
-        left: 0;
+    .navbar {
+        font-size: 16px;
+    }
+
+    .navbar-brand {
+        font-size: 25px;
+    }
+
+    /* .nav li{
+        border-right-color: rgba(255, 255, 255, 0.29);
+        border-right-style: groove;
+        background-color: ;
     } */
     
 </style>
@@ -57,7 +64,7 @@
                 {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>
                 {% endif %}
-                <li><a href="{{ url_for('main.menu') }}">Our Menu</a></li>
+                <li><a href="{{ url_for('main.menu') }}">Menu</a></li>
                 <li>
                     <a href="{{ url_for('main.cart') }}">
                         Cart

@@ -8,12 +8,16 @@
         h1 {
             display: flex;
             justify-content: center;
-            padding-bottom: 10px;
+            padding-bottom: 20px;
+            border-bottom-color: rgba(255, 255, 255, 0.322);
+            border-bottom-style: groove;
+            font-weight: 380;
         }
 
         #cart-list {
             padding-left: 15px;
             padding-right: 15px;
+            margin-bottom: 10px;
         }
 
         .cart-item {
@@ -34,32 +38,34 @@
         }
 
         p {
-            font-weight: 500;
-            font-size: large;
+            font-weight: 400;
+            font-size: 20px;
             font-style: italic;
-            color: white;
+            color: rgba(255, 255, 255, 0.71);
         }
 
         .quantity-input {
             color: white;
-            font-size: 40px;
-            font-weight: 500;
+            font-size: 45px;
+            font-weight: 350;
             background-color: transparent;
             width: 60px; 
         }
 
         .remove-button {
-            background-color: #ff5252;  /* Red color for remove button */
+            background-color: #ff5252a6;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 0.5%;
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s;
+            font-size: 15px;
+            width: 3cm;
         }
 
         .remove-button:hover {
-            background-color: #e02020;  /* Darker red on hover */
+            background-color: #ef1b1b;  /* Darker red on hover */
         }
 
         .buttons {
@@ -81,9 +87,10 @@
             font-size: 30px;
             padding: 12px 30px;
             color: red;
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.204);
             text-decoration: none;
-            transition: background-color 0.3s;  
+            transition: background-color 0.3s;
+            border-radius: 3%;
         }
 
         .button:hover {
@@ -92,21 +99,47 @@
             text-decoration: none;
         }
 
+        /* .total {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 30%;
+            display: flex;
+            /* align-items: flex-end; */
+            /* justify-content: center;
+            align-items: center;
+            padding: 8px 15px;
+            margin-bottom: 25px;
+            font-size: 40px;
+            font-weight: 300;
+            font-style: italic;
+            color: #ff5252;
+            background-color: #333333b9;
+        } */
+
+        .main-container {
+            margin-bottom: 100px;
+        }
+
     </style>
     
-
-    <h1>Your order:</h1>
-    <div id="cart-list">
-        {% for item in cart_items %}
-            <div class="cart-item">
-                <img src="{{ item.image }}" alt="{{ item.name }}">
-                <p>{{ item.name }} - ${{ item.price }}</p>
-            </div>
-        {% endfor %}
+    <div class="main-container">
+        <h1>Your order:</h1>
+        <div id="cart-list">
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <img src="{{ item.image }}" alt="{{ item.name }}">
+                    <p>{{ item.name }} - ${{ item.price }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        
     </div>
 
     <div class="buttons">
         <a href="{{ url_for('main.menu') }}" class="button"><span>&#8678;</span> BACK TO MENU</a>
+        <div class="button">Total: $<span id="totalAmount"></span></div>
         <a href="{{ url_for('main.order_confirmation') }}" class="button" onclick="proceedToCheckout()">CHECKOUT <span>&#10145;</span></a>
     </div>
     
@@ -184,6 +217,12 @@
         function calculateTotalAmount(items) {
             return items.reduce((sum, item) => sum + item.price, 0).toFixed(2);
         }
+
+        function updateTotalAmount() {
+            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            let totalAmount = calculateTotalAmount(cartItems);
+            document.getElementById('totalAmount').textContent = totalAmount;
+        }
     
         function displayCart() {
             const cartList = document.getElementById('cart-list');
@@ -221,6 +260,7 @@
                 cartItem.appendChild(removeButton);
                 cartList.appendChild(cartItem);
             });
+            updateTotalAmount();
         }
     
         displayCart();

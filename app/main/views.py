@@ -8,7 +8,7 @@ from app.email import send_email
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, NameForm, OrderForm
 from .. import db
-from ..models import Role, User, Permission, Order
+from ..models import Role, User, Permission
 from ..decorators import admin_required
 import app
 
@@ -87,10 +87,10 @@ def order_confirmation():
 
 
     if form.validate_on_submit():
-        order = Order(
-            # name=form.name.data,
-            # address=form.address.data,
-            # email=form.email.data
+        order = OrderForm(
+            name=form.name.data,
+            address=form.address.data,
+            email=form.email.data,
         )
 
         db.session.add(order)
