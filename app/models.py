@@ -141,12 +141,10 @@ class AnonymousUser(AnonymousUserMixin):
 
 login_manager.anonymous_user = AnonymousUser
 
-
-#TODO:
-
-# class Order(UserMixin, db.Model):
-#     __tablename__ = 'orders'
-#     id = db.Column(db.Integer, primary_key=True)
-#     email = db.Column(db.String(64), unique=True, index=True)
-#     address = db.Column(db.String(64))
-#     name = db.Column(db.String(64))
+class Order(db.Model):
+    __tablename__ = 'orders'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(64), index=True)
+    address = db.Column(db.String(64))
+    name = db.Column(db.String(64))
+    # total = db.Column(db.Float(64))

@@ -11,6 +11,7 @@ class OrderForm(FlaskForm):
     address = StringField('Delivery address:', validators=[DataRequired(),
                                                           Length(6, 20)] )
     email = email = StringField('Your e-mail (we will use it for contact purposes only)', validators=[DataRequired(), Length(1, 64), Email()])
+    submit = SubmitField('Submit')
     
 
 class NameForm(FlaskForm):

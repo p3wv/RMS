@@ -49,8 +49,10 @@ def register():
         user = User(email=form.email.data,
                     username=form.username.data,
                     password=form.password.data) # type: ignore
+        
         db.session.add(user)
         db.session.commit()
+        
         logging.info('User added to the database')
         try:
             token = user.generate_confirmation_token()
