@@ -17,6 +17,8 @@ class Config:
     RMS_MAIL_SUBJECT_PREFIX = '[RMS]'
     RMS_MAIL_SENDER = 'Restaurant Management System Admin'
     RMS_ADMIN = os.getenv('RMS_ADMIN')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_DEBUG = True
 

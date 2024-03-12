@@ -3,22 +3,24 @@ from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from config import config
 from flask_login import LoginManager
 import os
-
+from .commands import deploy_cli
 
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
+migrate = Migrate()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login' # type: ignore
 
 def create_app():
     app = Flask(__name__)
-    
+
     config_name = os.getenv('FLASKCONFIG') or 'default'
     
     app.config.from_object(config[config_name])
@@ -28,6 +30,7 @@ def create_app():
     mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     from .main import main as main_blueprint
@@ -38,6 +41,8 @@ def create_app():
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
+
+    app.cli.add_command(deploy_cli)
 
     # from .outside import outside as outside_blueprint
     # app.register_blueprint(outside_blueprint, url_prefix='/outside')

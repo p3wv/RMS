@@ -147,4 +147,6 @@ class Order(db.Model):
     email = db.Column(db.String(64), index=True)
     address = db.Column(db.String(64))
     name = db.Column(db.String(64))
-    # total = db.Column(db.Float(64))
+
+    total = db.Column(db.Float)
+    items = db.Column(db.String(64))

@@ -3,7 +3,8 @@ import sys
 import click
 from app import create_app, db
 from app.models import User, Role, Permission
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
+from flask_sqlalchemy import SQLAlchemy
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
@@ -13,6 +14,7 @@ if os.environ.get('FLASK_COVERAGE'):
 
 
 app = create_app()
+# db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
 migrate = Migrate(app, db)
@@ -47,3 +49,9 @@ def test(coverage, test_names):
         COV.html_report(directory=covdir)
         print('HTML ver: file://%s/index.html' % covdir)
         COV.erase()
+
+@app.cli.command()
+def deploy():
+    """Run deployment tasks."""
+    # migrate database to latest revision
+    upgrade()

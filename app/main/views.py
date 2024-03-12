@@ -1,6 +1,7 @@
 from ctypes import addressof
 from datetime import datetime
 import email
+import json
 from flask import flash, jsonify, render_template, session, redirect, url_for, request, current_app, make_response, abort
 from flask_login import login_required, current_user
 
@@ -81,15 +82,33 @@ def order_confirmation():
     form = OrderForm()
 
     if form.validate_on_submit():
-        order = Order(name=form.name.data,
-                      address=form.address.data,
-                      email=form.email.data)
+
+        email = form.email.data
+        name = form.name.data
+        address = form.address.data
+
+        cart_items_str = request.cookies.get('cart')
+
+        if cart_items_str:
+            cart_items = json.loads(cart_items_str)
+        else:
+            cart_items = []
+
+        items_json = json.dumps(cart_items_str)
+
+        order = Order(
+            email=email,
+            name=name,
+            address=address,
+            total=total_amount,
+            items=items_json
+        )
 
         db.session.add(order)
         db.session.commit()
 
-        send_order_confirmation_email(form.email.data, order)
-
+        send_order_confirmation_email(email, order)
+        
         flash('Order placed successfully!', 'success')
         return redirect(url_for('.ordered'))
 
