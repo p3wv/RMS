@@ -3,254 +3,438 @@
 {% block title %}Menu{% endblock %}
 
 {% block page_content %}
-    <style>
+<style>
 
-        h1 {
-            display: flexbox;
-            text-align: center;
-            font-weight: 380;
-            padding-bottom: 20px;
-            border-bottom-color: rgba(255, 255, 255, 0.322);
-            border-bottom-style: groove;
-        }
-
-        .menu-item {
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-
-        .menu-item img {
-            max-width: 100%;
-            height: auto;
-            width: 200px;
-            height: 150px;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10%;
-        }
-
-        .pagination li {
-            cursor: pointer;
-            font-weight: 300;
-            font-size: 40px;
-            background-color: transparent;
-            padding: 1%;
-            background-color: rgba(126, 252, 0, 0.514);
-            color: white;
-            border-style: groove;
-            border-color: rgba(255, 0, 0, 0.425)
-        }
-
-        .pagination li:hover {
-            color: black;
-            text-decoration: underline;
-        }
-
-        /* .pagination li:active {
-            color: black;
-            font-size: 35px;
-        } */
-
-        .add-to-cart-btn {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        }
-
-        #cart {
-            margin-top: 20px;
-            text-align: center;
-            font-size: large;
-        }
-
-        #cart-count {
-        font-weight: bold;
-        color: red;
-        font-size: large;
-        
-        }
-
-        .notification-popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #4CAF50; /* Green background */
-        color: white; /* White text */
+    h1 {
+        display: flexbox;
         text-align: center;
-        padding: 16px;
-        border-radius: 10px;
-        z-index: 1;
-        width: 300px;
-        max-width: 80%;
-        }
+        font-weight: 380;
+        padding-bottom: 20px;
+        border-bottom-color: rgba(255, 255, 255, 0.322);
+        border-bottom-style: groove;
+    }
 
-        .cart-status {
-            display: flex;
-            justify-content: center;
-            padding-bottom: 15px;
-        }
+    .menu-item {
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: bold;
+        color: #4CAF50;
+    }
 
-        .buttons {
-            display: flex;
-            justify-content: flex-end;
-            padding-bottom: 15px;
-            padding-right: 60px;
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            background-color: transparent; 
-            z-index: 1000;
-        }
+    .menu-item img {
+        max-width: 100%;
+        height: auto;
+        width: 200px;
+        height: 150px;
+    }
 
-        .button {
-            font-weight: 400;
-            font-size: 30px;
-            padding: 12px 50px;
-            color: red;
-            /* background-color: rgba(0, 0, 0, 0.204); */
-            background-color: transparent;
-            text-decoration: none;
-            transition: background-color 0.3s;  
-        }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10%;
+    }
 
-        .button:hover {
-            /* background-color: #333;   */
-            color: rgb(0, 255, 0);  
-            text-decoration: none;
-        }
-            
-    </style>
+    .pagination li {
+        cursor: pointer;
+        font-weight: 300;
+        font-size: 40px;
+        background-color: transparent;
+        padding: 1%;
+        background-color: rgba(126, 252, 0, 0.514);
+        color: white;
+        border-style: groove;
+        border-color: rgba(255, 0, 0, 0.425)
+    }
 
-    <h1>Menu:</h1>
+    .pagination li:hover {
+        color: black;
+        text-decoration: underline;
+    }
 
-    <div class="cart-status">
-        <p>Cart: <span id="cart-count">{{ cartCount }}</span> items</p>
-    </div>
+    /* .pagination li:active {
+        color: black;
+        font-size: 35px;
+    } */
+
+    .add-to-cart-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+
+    #cart {
+        margin-top: 20px;
+        text-align: center;
+        font-size: large;
+    }
+
+    #cart-count {
+    font-weight: bold;
+    color: red;
+    font-size: large;
     
+    }
 
-    <div id="menu-list"></div>
-    <ul class="pagination" id="pagination">
-    </ul>
+    .notification-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    text-align: center;
+    padding: 16px;
+    border-radius: 10px;
+    z-index: 1;
+    width: 300px;
+    max-width: 80%;
+    }
 
-    <div class="buttons">
-        <a href="{{ url_for('main.cart') }}" class="button" >ORDER <span>&#10145;</span></a>
-    </div>
-    
+    .cart-status {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 15px;
+    }
 
-    <div id="notification-popup" class="notification-popup">
-        Item has been added to your order
-    </div>
-    
+    .buttons {
+        display: flex;
+        justify-content: flex-end;
+        padding-bottom: 15px;
+        padding-right: 60px;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background-color: transparent; 
+        z-index: 1000;
+    }
 
-    <script>
-        const menuData = [
-            { name: "Appetizer 1", image: "/static/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg", price: 5.99 },
-            { name: "Appetizer 2", image: "/static/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg", price: 5.99 },
-            { name: "Main Course 1", image: "/static/Rogan-Josh-1190644860.jpg", price: 5.99 },
-            { name: "Main Course 2", image: "/static/SARCIADONG-ISDA-Filipino-fish-dish-IMG2.jpg.webp", price: 5.99 },
-            { name: "Dessert 1", image: "/static/tiramisu-dessert-easy-vegan.jpg.webp", price: 5.99 },
-            { name: "Dessert 2", image: "/static/easy-no-bake-desserts-645d1b63913ee.jpg", price: 5.99 },
-            { name: "Drinks 1", image: "/static/featured-starbucks-pink-drink-recipe.jpg", price: 5.99 },
-            { name: "Drinks 2", image: "/static/Strawberry-Water-006.webp", price: 5.99 }
-        ];
+    .button {
+        font-weight: 400;
+        font-size: 30px;
+        padding: 12px 50px;
+        color: red;
+        /* background-color: rgba(0, 0, 0, 0.204); */
+        background-color: transparent;
+        text-decoration: none;
+        transition: background-color 0.3s;  
+    }
 
-        const itemsPerPage = 4;
-        let currentPage = 1;
-        let cartCount = 0;
+    .button:hover {
+        /* background-color: #333;   */
+        color: rgb(0, 255, 0);  
+        text-decoration: none;
+    }
+        
+</style>
+
+<h1>Menu:</h1>
+
+<div class="cart-status">
+    <p>Cart: <span id="cart-count">{{ cartCount }}</span> items</p>
+</div>
 
 
-        function displayMenu(page) {
-            const menuList = document.getElementById('menu-list');
-            const pagination = document.getElementById('pagination');
+<div id="menu-list"></div>
+<ul class="pagination" id="pagination">
+</ul>
 
-            menuList.innerHTML = '';
-            pagination.innerHTML = '';
+<div class="buttons">
+    <a href="{{ url_for('main.cart') }}" class="button" >ORDER <span>&#10145;</span></a>
+</div>
 
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const displayedItems = menuData.slice(startIndex, endIndex);
 
-            displayedItems.forEach(item => {
-                const menuItem = document.createElement('div');
-                menuItem.className = 'menu-item';
+<div id="notification-popup" class="notification-popup">
+    Item has been added to your order
+</div>
 
-                const itemImage = document.createElement('img');
-                itemImage.src = item.image;
-                itemImage.alt = item.name;
+<form id="order-form" action="{{ url_for('main.order_confirmation') }}" method="POST">
+    <input type="hidden" id="cart-items" name="cart_items" value="">
+</form>   
 
-                const itemName = document.createElement('p');
-                itemName.textContent = `${item.name} - $${item.price}`;
+<script>
+    const menuData = [
+        { name: "Appetizer 1", image: "/static/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg", price: 5.99 },
+        { name: "Appetizer 2", image: "/static/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg", price: 5.99 },
+        { name: "Main Course 1", image: "/static/Rogan-Josh-1190644860.jpg", price: 5.99 },
+        { name: "Main Course 2", image: "/static/SARCIADONG-ISDA-Filipino-fish-dish-IMG2.jpg.webp", price: 5.99 },
+        { name: "Dessert 1", image: "/static/tiramisu-dessert-easy-vegan.jpg.webp", price: 5.99 },
+        { name: "Dessert 2", image: "/static/easy-no-bake-desserts-645d1b63913ee.jpg", price: 5.99 },
+        { name: "Drinks 1", image: "/static/featured-starbucks-pink-drink-recipe.jpg", price: 5.99 },
+        { name: "Drinks 2", image: "/static/Strawberry-Water-006.webp", price: 5.99 }
+    ];
 
-                const addToCartButton = document.createElement('button');
-                addToCartButton.textContent = 'Add to Cart';
-                addToCartButton.addEventListener('click', () => addToCart(item));
+    const itemsPerPage = 4;
+    let currentPage = 1;
+    let cartCount = 0;
 
-                menuItem.appendChild(itemImage);
-                menuItem.appendChild(itemName);
-                menuItem.appendChild(addToCartButton);
-                menuList.appendChild(menuItem);
-            });
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
-            const totalPages = Math.ceil(menuData.length / itemsPerPage);
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageItem = document.createElement('li');
-                pageItem.textContent = i;
-                pageItem.addEventListener('click', () => onPageClick(i));
-                pagination.appendChild(pageItem);
+    function addProductToCart(index) {
+        const item = menuData[index];
+        fetch(`/add_to_cart/${item.name}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ itemName: item.name }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-        }
-
-        function onPageClick(page) {
-            currentPage = page;
-            displayMenu(currentPage);
-        }
-
-        function showNotificationPopup() {
-            const notificationPopup = document.getElementById('notification-popup');
-            notificationPopup.style.display = 'block';
-
-            setTimeout(() => {
-                notificationPopup.style.display = 'none';
-            }, 2000);
-        }
-
-        function addToCart(item) {
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.message);
             let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            cartItems.push(item);
+            cartItems.push(index);
             localStorage.setItem('cart', JSON.stringify(cartItems));
             updateCartCount();
             showNotificationPopup();
-        }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 
-        function updateCartCount() {
-            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            cartCount = cartItems.length;
-            const cartCountElement = document.getElementById('cart-count');
-            cartCountElement.textContent = cartCount.toString();
-        }
-
-        function clearCart() {
-            sessionStorage.removeItem('cart');
-            updateCartCount();
-        }
-
-        clearCart();
-
+    function onPageClick(page) {
+        currentPage = page;
         displayMenu(currentPage);
+        setupPagination();
+    }
+
+
+
+    // function updateCartCount() {
+    //     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    //     cartCount = cartItems.length;
+    //     console.log(cartCount);
+    //     const cartCountElement = document.getElementById('cart-count');
+    //     cartCountElement.textContent = cartCount.toString();
+    // }
+
+
+    // function showNotificationPopup() {
+    //     const popup = document.getElementById('notification-popup');
+    //     popup.style.display = 'block';
+    //     setTimeout(() => {
+    //         popup.style.display = 'none';
+    //     }, 2000);
+    // }
+
+    function displayMenu(page) {
+        const menuList = document.getElementById('menu-list');
+        const pagination = document.getElementById('pagination');
+
+        menuList.innerHTML = '';
+        pagination.innerHTML = '';
+
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const displayedItems = menuData.slice(startIndex, endIndex);
+
+        displayedItems.forEach((item, index) => {
+            const menuItem = document.createElement('div');
+            menuItem.className = 'menu-item';
+
+            const itemImage = document.createElement('img');
+            itemImage.src = item.image;
+            itemImage.alt = item.name;
+
+            const itemName = document.createElement('p');
+            itemName.textContent = `${item.name} - $${item.price}`;
+
+            const addToCartButton = document.createElement('button');
+            addToCartButton.textContent = 'Add to Cart';
+            addToCartButton.addEventListener('click', () => addProductToCart(startIndex + index));
+
+            menuItem.appendChild(itemImage);
+            menuItem.appendChild(itemName);
+            menuItem.appendChild(addToCartButton);
+            menuList.appendChild(menuItem);
+        });
+
+        const totalPages = Math.ceil(menuData.length / itemsPerPage);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.textContent = i;
+            pageItem.addEventListener('click', () => onPageClick(i));
+            pagination.appendChild(pageItem);
+        }
+    }
+
+
+    function setupPagination() {
+        const totalPages = Math.ceil(menuData.length / itemsPerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.textContent = i;
+            if (i === currentPage) {
+                pageItem.classList.add('active');
+            }
+            pageItem.addEventListener('click', () => {
+                currentPage = i;
+                displayMenu(currentPage);
+                setupPagination();
+            });
+            pagination.appendChild(pageItem);
+        }
+    }
+
+    function updateCartCount() {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        cartCount = cartItems.length;
+        const cartCountElement = document.getElementById('cart-count');
+        cartCountElement.textContent = cartCount.toString();
+    }
+
+    function showNotificationPopup() {
+        const popup = document.getElementById('notification-popup');
+        popup.style.display = 'block';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        displayMenu(currentPage);
+        setupPagination();
+        cartCount = JSON.parse(localStorage.getItem('cart'))?.length || 0;
         updateCartCount();
-
-    </script>
-
+    });
+</script>
 {% endblock %}
+
+<!-- <script>
+    const menuData = [
+        { name: "Appetizer 1", image: "/static/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg", price: 5.99 },
+        { name: "Appetizer 2", image: "/static/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg", price: 5.99 },
+        { name: "Main Course 1", image: "/static/Rogan-Josh-1190644860.jpg", price: 5.99 },
+        { name: "Main Course 2", image: "/static/SARCIADONG-ISDA-Filipino-fish-dish-IMG2.jpg.webp", price: 5.99 },
+        { name: "Dessert 1", image: "/static/tiramisu-dessert-easy-vegan.jpg.webp", price: 5.99 },
+        { name: "Dessert 2", image: "/static/easy-no-bake-desserts-645d1b63913ee.jpg", price: 5.99 },
+        { name: "Drinks 1", image: "/static/featured-starbucks-pink-drink-recipe.jpg", price: 5.99 },
+        { name: "Drinks 2", image: "/static/Strawberry-Water-006.webp", price: 5.99 }
+    ];
+
+    const itemsPerPage = 4;
+    let currentPage = 1;
+    let cartCount = 0;
+
+
+    function updateCartCount() {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        cartCount = cartItems.length;
+        console.log(cartCount);
+        const cartCountElement = document.getElementById('cart-count');
+        cartCountElement.textContent = cartCount.toString();
+    }
+
+    function addToCart(itemName) {
+        fetch(`/add_to_cart/${itemName}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ itemName: itemName }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.message);
+            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            cartItems.push(itemName);
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+
+            updateCartCount();
+
+            showNotificationPopup();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function displayMenu(page) {
+        const menuList = document.getElementById('menu-list');
+        const pagination = document.getElementById('pagination');
+
+        menuList.innerHTML = '';
+        pagination.innerHTML = '';
+
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const displayedItems = menuData.slice(startIndex, endIndex);
+
+        displayedItems.forEach(item => {
+            const menuItem = document.createElement('div');
+            menuItem.className = 'menu-item';
+
+            const itemImage = document.createElement('img');
+            itemImage.src = item.image;
+            itemImage.alt = item.name;
+
+            const itemName = document.createElement('p');
+            itemName.textContent = `${item.name} - $${item.price}`;
+
+            const addToCartButton = document.createElement('button');
+            addToCartButton.textContent = 'Add to Cart';
+            addToCartButton.addEventListener('click', () => addToCart(item.name));
+
+
+            menuItem.appendChild(itemImage);
+            menuItem.appendChild(itemName);
+            menuItem.appendChild(addToCartButton);
+            menuList.appendChild(menuItem);
+        });
+
+        const totalPages = Math.ceil(menuData.length / itemsPerPage);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.textContent = i;
+            pageItem.addEventListener('click', () => onPageClick(i));
+            pagination.appendChild(pageItem);
+        }
+    }
+-->
+
+    
+<!--
+    function showNotificationPopup() {
+        const notificationPopup = document.getElementById('notification-popup');
+        notificationPopup.style.display = 'block';
+
+        setTimeout(() => {
+            notificationPopup.style.display = 'none';
+        }, 2000);
+    }
+
+    // function clearCart() {
+    //     sessionStorage.removeItem('cart');
+    //     updateCartCount();
+    // }
+
+    // clearCart();
+
+    displayMenu(currentPage);
+    updateCartCount();
+
+    function proceedToCheckout() {
+        document.cookie = "cart_items=" + localStorage.getItem('cart') + ";path=/";
+        document.getElementById('order-form').submit();
+    }
+
+</script> -->

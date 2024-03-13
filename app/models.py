@@ -3,6 +3,7 @@ from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from flask import current_app
+import json
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -149,4 +150,11 @@ class Order(db.Model):
     name = db.Column(db.String(64))
 
     total = db.Column(db.Float)
-    items = db.Column(db.String(64))
+    items = db.Column(db.String(1024))
+
+    def set_items(self, items):
+        self.items = json.dumps(items)
+
+    def get_items(self):
+        print(self.items)
+        return json.loads(self.items)

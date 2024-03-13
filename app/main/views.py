@@ -1,17 +1,20 @@
-from ctypes import addressof
+# from ctypes import addressof
 from datetime import datetime
-import email
+# import email
 import json
-from flask import flash, jsonify, render_template, session, redirect, url_for, request, current_app, make_response, abort
+from flask import flash, jsonify, render_template, session, redirect, url_for, request
+# from flask import current_app, make_response, abort
 from flask_login import login_required, current_user
 
-from app.email import send_email, send_order_confirmation_email
+from app.email import send_order_confirmation_email
+# from app.email import send_email
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, NameForm, OrderForm
 from .. import db
-from ..models import Role, User, Permission, Order
+from ..models import Role, User, Order
+# from ..models import Permission
 from ..decorators import admin_required
-import app
+# import app
 
 @main.route('/')
 def index():
@@ -45,9 +48,44 @@ def menu():
 
 @main.route('/cart', methods=['GET', 'POST'])
 def cart():
-    return render_template('cart.html')
+    cart_items = session.get('cart', [])
+    return render_template('cart.html', cart_items=cart_items)
 
 total_amount_storage = None
+
+@main.route('/add_to_cart/<itemName>', methods=['POST'])
+def add_to_cart(itemName):
+    try:
+        cart = session.get('cart', [])
+        cart.append({'name': itemName, 'quantity': 1})
+
+        session['cart'] = cart
+
+        return jsonify({'success': True, 'message': f'Item "{itemName}" added to cart'})
+    except Exception as e:
+        print('Error:', e)
+        return jsonify({'success': False, 'error': str(e)})
+
+# @main.route('/add_to_cart/<itemName>', methods=['POST'])
+# def add_to_cart(itemName):
+#     try:
+#         cart = session.get('cart', [])
+
+#         cart.append(itemName)
+
+#         session['cart'] = cart
+
+#         # if itemName in cart:
+#         #     cart[itemName]['quantity'] += 1
+#         # else:
+#         #     cart[itemName] = {'quantity': 1}
+
+#         # session['cart'] = cart
+
+#         return jsonify({'success': True, 'message': f'Item "{itemName}" added to cart'})
+#     except Exception as e:
+#         print('Error:', e)
+#         return jsonify({'success': False, 'error': 'An error occurred while adding the item to the cart'})
 
 @main.route('/save_total_amount', methods=['POST'])
 def save_total_amount():
@@ -87,14 +125,15 @@ def order_confirmation():
         name = form.name.data
         address = form.address.data
 
-        cart_items_str = request.cookies.get('cart')
+        cart_items_str = request.form.get('cart_items') or request.cookies.get('cart_items')
+        print("Cart Items String:", cart_items_str)
 
         if cart_items_str:
             cart_items = json.loads(cart_items_str)
         else:
             cart_items = []
 
-        items_json = json.dumps(cart_items_str)
+        items_json = json.dumps(cart_items)
 
         order = Order(
             email=email,
@@ -104,10 +143,17 @@ def order_confirmation():
             items=items_json
         )
 
+
         db.session.add(order)
         db.session.commit()
 
-        send_order_confirmation_email(email, order)
+        order_id = order.id
+        order = Order.query.get(order.id)
+        items = order.get_items()
+
+        print("order after from db: ", items)
+
+        send_order_confirmation_email(email, items)
         
         flash('Order placed successfully!', 'success')
         return redirect(url_for('.ordered'))

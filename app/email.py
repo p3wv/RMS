@@ -2,6 +2,7 @@ from threading import Thread
 from flask import current_app, render_template, views
 from flask_mail import Message
 from . import mail
+from .models import Order
 # from .auth .views import order
 
 def send_async_email(app, msg):
@@ -19,19 +20,23 @@ def send_email(to, subject, template, **kwargs):
     thr.start()
     thr.join()
     return thr
-    
-# TODO:
 
-def send_order_confirmation_email(to, order):
+def send_order_confirmation_email(to, cart_items):
     app = current_app._get_current_object() # type: ignore
     subject = 'Order Confirmation'
     msg = Message(app.config['RMS_MAIL_SUBJECT_PREFIX'] + ' ' + subject, 
                   sender=app.config['RMS_MAIL_SENDER'], recipients=[to])
     
-    # msg.body = render_template(template + '.txt', **kwargs)
-    # msg.html = render_template(template + '.html', **kwargs)
+    item_names = []
 
-    msg.body = f"Thank you for your order!\nOrder Details:\n{order}"
+    for item in cart_items:
+        if isinstance(item, dict) and 'name' in item:
+            item_names.append(item['name'])
+
+    email_body = f"Thank you for your order!\n\nOrdered Items:\n"
+    email_body += '\n'.join(item_names)
+
+    msg.body = email_body
 
     thr = Thread(target=send_async_email, args=[app, msg])
     thr.start()

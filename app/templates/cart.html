@@ -3,291 +3,535 @@
 {% block title %}Your Order{% endblock %}
 
 {% block page_content %}
-    <style>
+<style>
 
-        h1 {
-            display: flex;
-            justify-content: center;
-            padding-bottom: 20px;
-            border-bottom-color: rgba(163, 50, 50, 0.469);
-            border-bottom-style: groove;
-            font-weight: 380;
-        }
+    h1 {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 20px;
+        border-bottom-color: rgba(163, 50, 50, 0.469);
+        border-bottom-style: groove;
+        font-weight: 380;
+    }
 
-        #cart-list {
-            padding-left: 15px;
-            padding-right: 15px;
-            margin-bottom: 10px;
-        }
+    #cart-list {
+        padding-left: 15px;
+        padding-right: 15px;
+        margin-bottom: 10px;
+    }
 
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 5px;
-            padding-bottom: 5px;
-            border-bottom-style: groove;
-            border-bottom-color: rgba(255, 255, 255, 0.322);
-            border-bottom-width: 1px;
-            /* outline-style: ridge; */
-            /* outline-color: black; */
-            align-items: center; 
-        }
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-bottom-style: groove;
+        border-bottom-color: rgba(255, 255, 255, 0.322);
+        border-bottom-width: 1px;
+        /* outline-style: ridge; */
+        /* outline-color: black; */
+        align-items: center; 
+    }
 
-        .cart-item img {
-            max-width: 100%;
-            height: auto;
-            width: 75px;
-            height: 60px;
-            border-radius: 5%;
-        }
+    .cart-item img {
+        max-width: 100%;
+        height: auto;
+        width: 75px;
+        height: 60px;
+        border-radius: 5%;
+    }
 
-        p {
-            font-weight: 350;
-            font-size: 20px;
-            font-style: italic;
-            color: rgba(255, 255, 255, 0.71);
-        }
+    p {
+        font-weight: 350;
+        font-size: 20px;
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.71);
+    }
 
-        .quantity-input {
-            color: white;
-            font-size: 35px;
-            font-weight: 350;
-            background-color: transparent;
-            width: 60px; 
-        }
+    .quantity-input {
+        color: white;
+        font-size: 35px;
+        font-weight: 350;
+        background-color: transparent;
+        width: 60px; 
+    }
 
-        .remove-button {
-            background-color: transparent;
-            /* color: #ff5252a6; */
-            border: none;
-            /* padding: 0.5%; */
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 25px;
-            width: 1cm;
-            margin-right: 20px;
-        }
+    .remove-button {
+        background-color: transparent;
+        /* color: #ff5252a6; */
+        border: none;
+        /* padding: 0.5%; */
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 25px;
+        width: 1cm;
+        margin-right: 20px;
+    }
 
-        /* .remove-button:hover {
-            color: #ef1b1b;
-        } */
+    /* .remove-button:hover {
+        color: #ef1b1b;
+    } */
 
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 5px;
-            padding-right: 60px;
-            padding-left: 60px;
-            position: absolute;
-            /* bottom: 0; */
-            right: 0;
-            left: 0;
-            background-color: transparent; 
-            z-index: 1000;
-        }
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 5px;
+        padding-right: 60px;
+        padding-left: 60px;
+        position: absolute;
+        /* bottom: 0; */
+        right: 0;
+        left: 0;
+        background-color: transparent; 
+        z-index: 1000;
+    }
 
-        .button {
-            font-weight: 400;
-            font-size: 27px;
-            font-style: italic;
-            padding: 12px 50px;
-            color: tomato;
-            /* background-color: rgba(0, 0, 0, 0.204); */
-            text-decoration: none;
-            /* transition: background-color 0.3s; */
-            border-radius: 3%;
-        }
+    .button {
+        font-weight: 400;
+        font-size: 27px;
+        font-style: italic;
+        padding: 12px 50px;
+        color: tomato;
+        /* background-color: rgba(0, 0, 0, 0.204); */
+        text-decoration: none;
+        /* transition: background-color 0.3s; */
+        border-radius: 3%;
+    }
 
-        .back-button {
-            font-weight: 400;
-            font-size: 27px;
-            padding: 12px 50px;
-            color: white;
-            /* background-color: rgba(0, 0, 0, 0.204); */
-            text-decoration: none;
-            /* transition: background-color 0.3s; */
-            border-radius: 3%;
-        }
+    .back-button {
+        font-weight: 400;
+        font-size: 27px;
+        padding: 12px 50px;
+        color: white;
+        /* background-color: rgba(0, 0, 0, 0.204); */
+        text-decoration: none;
+        /* transition: background-color 0.3s; */
+        border-radius: 3%;
+    }
 
-        .total-button {
-            font-weight: 250;
-            font-size: 37px;
-            padding: 12px 50px;
-            color: greenyellow;
-            /* background-color: rgba(0, 0, 0, 0.204); */
-            text-decoration: none;
-            /* transition: background-color 0.3s; */
-            border-radius: 3%;
-        }
+    .total-button {
+        font-weight: 250;
+        font-size: 37px;
+        padding: 12px 50px;
+        color: greenyellow;
+        /* background-color: rgba(0, 0, 0, 0.204); */
+        text-decoration: none;
+        /* transition: background-color 0.3s; */
+        border-radius: 3%;
+    }
 
-        .button:hover {
-            /* background-color: #333;   */
-            color: rgb(0, 255, 0);  
-            text-decoration: none;
-        }
+    .button:hover {
+        /* background-color: #333;   */
+        color: rgb(0, 255, 0);  
+        text-decoration: none;
+    }
 
-        .back-button:hover {
-            color: red;  
-            text-decoration: none;
-        }
+    .back-button:hover {
+        color: red;  
+        text-decoration: none;
+    }
 
-        .main-container {
-            margin-bottom: 85px;
-        }
+    .main-container {
+        margin-bottom: 85px;
+    }
 
-        #totalAmount {
-            font-style: italic;
-        }
-    </style>
-    
-    <div class="main-container">
-        <h1>Your order:</h1>
-        <div id="cart-list">
-            {% for item in cart_items %}
-                <div class="cart-item">
-                    <img src="{{ item.image }}" alt="{{ item.name }}">
-                    <p>{{ item.name }} - ${{ item.price }}</p>
-                </div>
-            {% endfor %}
+    #totalAmount {
+        font-style: italic;
+    }
+</style>
+
+<div class="main-container">
+    <h1>Your order:</h1>
+    <div id="cart-container"></div>
+    <div id="cart-list">
+        {% for item in cart_items %}
+        <div class="cart-item">
+            <img src="{{ item.image }}" alt="{{ item.name }}">
+            <p>{{ item.name }} - ${{ item.price }}</p>
+            <div class="quantity-buttons">
+                <button class="decrement-button" data-index="{{ loop.index0 }}">-</button>
+                <input type="number" class="quantity-input" min="0" value="{{ item.quantity }}" data-index="{{ loop.index0 }}">
+                <button class="increment-button" data-index="{{ loop.index0 }}">+</button>
+            </div>
+            <button class="remove-button" data-index="{{ loop.index0 }}">Remove</button>
         </div>
-        <div class="buttons">
-            <a href="{{ url_for('main.menu') }}" class="back-button"><span>&#8678;</span> BACK TO MENU</a>
-            <div class="total-button">TOTAL: $<span id="totalAmount"></span></div>
-            <a href="{{ url_for('main.order_confirmation') }}" class="button" onclick="proceedToCheckout()">CHECK, PLEASE! <span>&#10145;</span></a>
-        </div>
+        {% endfor %}
     </div>
+    <div class="buttons">
+        <a href="{{ url_for('main.menu') }}" class="back-button"><span>&#8678;</span> BACK TO MENU</a>
+        <div class="total-button">TOTAL: $<span id="totalAmount"></span></div>
+        <a href="{{ url_for('main.order_confirmation') }}" class="button" onclick="proceedToCheckout()">CHECK, PLEASE! <span>&#10145;</span></a>
+    </div>
+</div>
 
-    
-    
-    <script>
+<form method="POST">
+    <input type="hidden" name="items" id="items">
+</form>
 
-        function proceedToCheckout() {
-            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            let totalAmount = calculateTotalAmount(cartItems);
+<form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
+    <!-- Form inputs go here -->
+</form>
 
-            fetch('/save_total_amount', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ totalAmount: totalAmount }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                window.location.href = '/order_confirmation';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('There was an error processing the order. Please try again.');
-            });
-        }
 
-        function groupIdenticalItems(items) {
-            let groupedItems = [];
-            
-            items.forEach(item => {
-                const existingGroup = groupedItems.find(group => isIdentical(group[0], item));
+<script>
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    let removeButtons;
 
-                if (existingGroup) {
-                    existingGroup.push(item);
-                } else {
-                    groupedItems.push([item]);
-                }
-            });
+    function proceedToCheckout() {
+        let totalAmount = calculateTotalAmount(cartItems);
 
-            return groupedItems;
-        }
-    
-        function isIdentical(item1, item2) {
-            return item1.name === item2.name && item1.price === item2.price;
-        }
-        function updateQuantity(event, index) {
-            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            let groupedItems = groupIdenticalItems(cartItems);
-
-            // groupedItems[index] = Array(Number(event.target.value)).fill(groupedItems[index][0]);
-
-            const newQuantity = Number(event.target.value);
-
-            if (newQuantity === 0) {
-                groupedItems.splice(index, 1);
-            } else {
-                groupedItems[index] = Array(newQuantity).fill(groupedItems[index][0]);
+        fetch('/save_total_amount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ totalAmount: totalAmount }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            return response.json();
+        })
+        .then(data => {
+            window.location.href = '/order_confirmation';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error processing the order. Please try again.');
+        });
 
-            let updatedCart = groupedItems.flat();
+        document.getElementById('items').value = JSON.stringify(cartItems);
+        document.cookie = `cart_items=${JSON.stringify(cartItems)}`;
 
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-            displayCart();
+        document.getElementById('order-form').submit();
+    }
+
+    function calculateTotalAmount(cartItems) {
+        return cartItems.reduce((sum, item) => {
+            if (item && item.price) {
+                return sum + item.price;
+            } else {
+                return sum;
+            }
+        }, 0).toFixed(2);
+    }
+
+    function displayCart(cartItems) {
+        const cartContainer = document.getElementById('cart-list');
+        cartContainer.innerHTML = '';
+
+        if (!cartItems || cartItems.length === 0) {
+            cartContainer.textContent = 'Your cart is empty';
+            return;
         }
-    
-        function removeItem(index) {
-            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            let groupedItems = groupIdenticalItems(cartItems);
 
-            groupedItems.splice(index, 1);
+        const groupedItems = groupIdenticalItems(cartItems);
 
-            let updatedCart = groupedItems.flat();
+        groupedItems.forEach(group => {
+            const item = group[0]; // Take the first item in the group
+            const itemCount = group.length; // Count the number of identical items in the group
 
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-            displayCart();
-        }
-    
-        function calculateTotalAmount(items) {
-            return items.reduce((sum, item) => sum + item.price, 0).toFixed(2);
-        }
+            const cartItemDiv = document.createElement('div');
+            cartItemDiv.className = 'cart-item';
 
-        function updateTotalAmount() {
-            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            let totalAmount = calculateTotalAmount(cartItems);
-            document.getElementById('totalAmount').textContent = totalAmount;
-        }
-    
-        function displayCart() {
-            const cartList = document.getElementById('cart-list');
-            cartList.innerHTML = '';
+            const itemImage = document.createElement('img');
+            itemImage.src = item.image;
+            itemImage.alt = item.name;
 
-            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            let groupedItems = groupIdenticalItems(cartItems);
+            const itemNamePrice = document.createElement('p');
+            itemNamePrice.textContent = `${item.name} - $${item.price} x ${itemCount}`;
 
-            groupedItems.forEach((group, index) => {
-                const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item';
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.className = 'quantity-input';
+            quantityInput.min = '0';
+            quantityInput.value = itemCount;
 
-                const itemImage = document.createElement('img');
-                itemImage.src = group[0].image;
-                itemImage.alt = group[0].name;
+            const removeButton = document.createElement('button');
+            removeButton.textContent = '❌';
+            removeButton.className = 'remove-button';
 
-                const itemName = document.createElement('p');
-                itemName.textContent = `${group[0].name} - $${group[0].price}`;
+            cartItemDiv.appendChild(itemImage);
+            cartItemDiv.appendChild(itemNamePrice);
+            cartItemDiv.appendChild(quantityInput);
+            cartItemDiv.appendChild(removeButton);
+            cartContainer.appendChild(cartItemDiv);
+        });
 
-                const quantityInput = document.createElement('input');
-                quantityInput.type = 'number';
-                quantityInput.className = 'quantity-input';
-                quantityInput.value = group.length;
-                quantityInput.min = '0';
-                quantityInput.addEventListener('change', (event) => updateQuantity(event, index));
-
-                const removeButton = document.createElement('button');
-                removeButton.textContent = '❌';
-                removeButton.className = 'remove-button';
-                removeButton.addEventListener('click', () => removeItem(index));
-
-                cartItem.appendChild(itemImage);
-                cartItem.appendChild(itemName);
-                cartItem.appendChild(quantityInput);
-                cartItem.appendChild(removeButton);
-                cartList.appendChild(cartItem);
-            });
+        if (typeof updateTotalAmount === 'function') {
             updateTotalAmount();
         }
-    
-        displayCart();
-    </script>
+    }
 
+    function groupIdenticalItems(cartItems) {
+        const groupedItems = {};
+        cartItems.forEach(item => {
+            if (item && item.name) {
+                const itemName = item.name;
+                if (groupedItems[itemName]) {
+                    groupedItems[itemName].push(item);
+                } else {
+                    groupedItems[itemName] = [item];
+                }
+            }
+        });
+        return Object.values(groupedItems);
+    }
+
+    let quantityInputs;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        quantityInputs = document.querySelectorAll('.quantity-input');
+        // removeButtons = document.querySelectorAll('.remove-button');
+
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        displayCart(cartItems);
+        updateTotalAmount();
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', function(event) {
+                const index = parseInt(event.target.dataset.index);
+                const newQuantity = parseInt(event.target.value);
+                updateQuantity(newQuantity, index);
+                updateTotalAmount();
+            });
+        });
+
+        // removeButtons.forEach(button => {
+        //     button.addEventListener('click', function(event) {
+        //         const index = parseInt(event.target.dataset.index);
+        //         removeItem(index);
+        //         updateTotalAmount();
+        //     });
+        // });
+
+        const decrementButtons = document.querySelectorAll('.decrement-button');
+        decrementButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                const index = parseInt(event.target.dataset.index);
+                updateQuantity(index, -1); // Decrease quantity by 1
+                updateTotalAmount();
+            });
+        });
+
+        const incrementButtons = document.querySelectorAll('.increment-button');
+        incrementButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                const index = parseInt(event.target.dataset.index);
+                updateQuantity(index, 1); // Increase quantity by 1
+                updateTotalAmount();
+            });
+        });
+
+        const removeButtons = document.querySelectorAll('.remove-button');
+        removeButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                const index = parseInt(event.target.dataset.index);
+                removeItem(index);
+                updateTotalAmount();
+            });
+        });
+    });
+
+    function removeItem(index) {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cartItems[index]) {
+            cartItems.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            displayCart(cartItems);
+        }
+    }
+
+    function updateQuantity(newQuantity, index) {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cartItems[index]) {
+            if (!cartItems[index].quantity) {
+                cartItems[index].quantity = 0;
+            }
+            if (parseInt(newQuantity) === 0) {
+                cartItems.splice(index, 1);
+            } else {
+                const itemToAdd = { ...cartItems[index] };
+                cartItems.splice(index, 1, ...Array(parseInt(newQuantity)).fill(itemToAdd));
+            }
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            displayCart(cartItems);
+        }
+    }
+
+    function updateTotalAmount() {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalAmount = calculateTotalAmount(cartItems);
+        document.getElementById('totalAmount').textContent = totalAmount;
+    }
+</script>
 {% endblock %}
+
+<!-- <script>
+
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function proceedToCheckout() {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalAmount = calculateTotalAmount(cartItems);
+
+        fetch('/save_total_amount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ totalAmount: totalAmount }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            window.location.href = '/order_confirmation';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error processing the order. Please try again.');
+        });
+
+        document.getElementById('items').value = JSON.stringify(cartItems);
+
+        document.querySelector('form').submit();
+    }
+
+    // function groupIdenticalItems(cartItems) {
+    //     const groupedItems = {};
+    //     cartItems.forEach(item => {
+    //         if (item) {
+    //             const itemName = item.name;
+    //             if (groupedItems[itemName]) {
+    //                 groupedItems[itemName].quantity += 1;
+    //             } else {
+    //                 groupedItems[itemName] = item;
+    //             }
+    //         }
+    //     });
+    //     return Object.values(groupedItems);
+    // }
+
+
+    function isIdentical(item1, item2) {
+        return item1.name === item2.name && item1.price === item2.price;
+    }
+    function updateQuantity(event, index) {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        let groupedItems = groupIdenticalItems(cartItems);
+
+        // groupedItems[index] = Array(Number(event.target.value)).fill(groupedItems[index][0]);
+
+        const newQuantity = Number(event.target.value);
+
+        if (newQuantity === 0) {
+            groupedItems.splice(index, 1);
+        } else {
+            groupedItems[index] = Array(newQuantity).fill(groupedItems[index][0]);
+        }
+
+        let updatedCart = groupedItems.flat();
+
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        displayCart();
+    }
+
+    function removeItem(index) {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        let groupedItems = groupIdenticalItems(cartItems);
+
+        groupedItems.splice(index, 1);
+
+        let updatedCart = groupedItems.flat();
+
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        displayCart();
+    }
+
+    function calculateTotalAmount(items) {
+        return items.reduce((sum, item) => {
+            if (item && item.price) {
+                return sum + item.price;
+            } else {
+                return sum;
+            }
+        }, 0).toFixed(2);
+    }
+
+
+    function updateTotalAmount() {
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalAmount = calculateTotalAmount(cartItems);
+        document.getElementById('totalAmount').textContent = totalAmount;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        displayCart(cartItems);
+    });
+
+    function displayCart(cartItems) {
+        const cartContainer = document.getElementById('cart-list');
+        cartContainer.innerHTML = '';
+
+        if (!cartItems || cartItems.length === 0) {
+            cartContainer.textContent = 'Your cart is empty';
+            return;
+        }
+
+        const groupedItems = groupIdenticalItems(cartItems);
+
+        groupedItems.forEach(group => {
+            const item = group[0]; // Take the first item in the group
+            const itemCount = group.length; // Count the number of identical items in the group
+
+            const cartItemDiv = document.createElement('div');
+            cartItemDiv.className = 'cart-item';
+
+            const itemImage = document.createElement('img');
+            itemImage.src = item.image;
+            itemImage.alt = item.name;
+
+            const itemNamePrice = document.createElement('p');
+            itemNamePrice.textContent = `${item.name} - $${item.price} x ${itemCount}`;
+
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.className = 'quantity-input';
+            quantityInput.min = '0';
+            quantityInput.value = itemCount;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = '❌';
+            removeButton.className = 'remove-button';
+
+            cartItemDiv.appendChild(itemImage);
+            cartItemDiv.appendChild(itemNamePrice);
+            cartItemDiv.appendChild(quantityInput);
+            cartItemDiv.appendChild(removeButton);
+            cartContainer.appendChild(cartItemDiv);
+        });
+    }
+
+    function groupIdenticalItems(cartItems) {
+        const groupedItems = {};
+        cartItems.forEach(item => {
+            if (item && item.name) {
+                const itemName = item.name;
+                if (groupedItems[itemName]) {
+                    groupedItems[itemName].push(item);
+                } else {
+                    groupedItems[itemName] = [item];
+                }
+            }
+        });
+        return Object.values(groupedItems);
+    }
+
+
+</script> -->
