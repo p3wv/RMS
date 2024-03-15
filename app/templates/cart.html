@@ -46,26 +46,46 @@
         color: rgba(255, 255, 255, 0.71);
     }
 
-    .quantity-input {
+    .quantity-container {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        font-weight: bold;
         color: white;
-        font-size: 35px;
-        font-weight: 350;
-        background-color: black;
-        width: 60px; 
+    }
+
+    .quantity-button {
+        background-color: tomato;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .quantity-button:hover {
+        background-color: red;
+    }
+
+    .quantity-display {
+        margin: 0 10px;
     }
 
     .remove-button {
-        background-color: transparent;
+        background-color: tomato;
+        color: white;
         border: none;
         cursor: pointer;
         border-radius: 5px;
-        font-size: 25px;
-        width: 1cm;
-        margin-right: 20px;
+        font-size: 16px;
+        padding: 8px 16px;
+        margin-right: 10px;
+        transition: background-color 0.3s;
     }
 
     .remove-button:hover {
-        color: #ef1b1b;
+        background-color: red;
     }
 
     .buttons {
@@ -89,7 +109,16 @@
         color: tomato;
         text-decoration: none;
         border-radius: 3%;
+        background-color: transparent;
+        border: 2px solid tomato;
+        transition: background-color 0.3s, color 0.3s;
     }
+
+    .button:hover {
+        background-color: tomato;
+        color: white;
+    }
+
 
     .back-button {
         font-weight: 400;
@@ -109,11 +138,6 @@
         border-radius: 3%;
     }
 
-    .button:hover {
-        color: rgb(0, 255, 0);  
-        text-decoration: none;
-    }
-
     .back-button:hover {
         color: red;  
         text-decoration: none;
@@ -122,58 +146,39 @@
     .main-container {
         margin-bottom: 85px;
     }
-    
-    .quantity-buttons {
-        background-color: blue;
+
+    .empty-cart-message {
+        font-weight: bold;
+        color: red;
+        text-align: center;
+        font-size: 24px;
+        margin-top: 20px;
     }
 </style>
 
 <h1>Your order:</h1>
-<div id="cart-list">
-    {% for item in cart_items %}
-    <div class="cart-item">
-        <img src="{{ item.image }}" alt="{{ item.name }}">
-        <p>{{ item.name }} - ${{ item.price }}</p>
-        <div class="quantity-buttons">
-            <button class="decrement-button" data-index="{{ loop.index0 }}">-</button>
-            <input type="number" min="0" value="{{ item.quantity }}" class="quantity-input" data-index="{{ loop.index }}">
-            <button class="increment-button" data-index="{{ loop.index }}">+</button>
-            <button class="remove-item-button" data-index="{{ loop.index }}">Remove from cart</button>
-        </div>
-    </div>
-    {% endfor %}
+
+<div id="cart-list" class="cart-container">
+
 </div>
+
 <div class="buttons">
     <a href="{{ url_for('main.menu') }}" class="back-button"><span>&#8678;</span> BACK TO MENU</a>
     <div class="total-button">TOTAL: $<span id="totalAmount"></span></div>
-    <a href="{{ url_for('main.order_confirmation') }}" class="button">CHECK, PLEASE! <span>&#10145;</span></a>
+    <button class="button" onclick="submitOrder()">CHECK, PLEASE! <span>&#10145;</span></button>
 </div>
 
-<form method="POST">
+<form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
     <input type="hidden" name="items" id="items">
 </form>
 
-<form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}"></form>
-
 <script>
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    
+    let cartItems;
+
     document.addEventListener('DOMContentLoaded', function() {
+        cartItems = JSON.parse(localStorage.getItem('cart')) || [];
         displayCart(cartItems);
         updateTotalAmount(calculateTotalAmount(cartItems));
-
-        const quantityInputs = document.querySelectorAll('.quantity-input');
-        quantityInputs.forEach(input => {
-            input.addEventListener('change', function(event) {
-                const index = parseInt(event.target.dataset.index);
-                const newQuantity = parseInt(event.target.value);
-                if (!isNaN(index)) {
-                    updateQuantity(index, newQuantity);
-                } else {
-                    console.error("Invalid index:", index);
-                }
-            });
-        });
     });
 
     function displayCart(cartItems) {
@@ -189,7 +194,7 @@
 
         groupedItems.forEach(group => {
             const item = group[0];
-            const itemCount = group.length;
+            const totalQuantity = group.reduce((total, currentItem) => total + currentItem.quantity, 0);
 
             const cartItemDiv = document.createElement('div');
             cartItemDiv.className = 'cart-item';
@@ -199,42 +204,81 @@
             itemImage.alt = item.name;
 
             const itemNamePrice = document.createElement('p');
-            itemNamePrice.textContent = `${item.name} - $${item.price} x ${itemCount}`;
+            itemNamePrice.textContent = `${item.name} - $${item.price} x ${totalQuantity}`;
 
-            const quantityInput = document.createElement('input');
-            quantityInput.type = 'number';
-            quantityInput.className = 'quantity-input';
-            quantityInput.min = '0';
-            quantityInput.value = itemCount;
-            quantityInput.dataset.index = item.index; // Add dataset for item index
+            const quantityContainer = document.createElement('div');
+            quantityContainer.className = 'quantity-container';
+
+            const addButton = document.createElement('button');
+            addButton.textContent = '+';
+            addButton.className = 'quantity-button';
+            addButton.addEventListener('click', function() {
+                updateQuantity(item.name, 1);
+            });
+
+            const minusButton = document.createElement('button');
+            minusButton.textContent = '-';
+            minusButton.className = 'quantity-button';
+            minusButton.addEventListener('click', function() {
+                updateQuantity(item.name, -1);
+            });
+
+            const quantityDisplay = document.createElement('span');
+            quantityDisplay.textContent = totalQuantity;
+
+            quantityContainer.appendChild(minusButton);
+            quantityContainer.appendChild(quantityDisplay);
+            quantityContainer.appendChild(addButton);
 
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remove from cart';
-            removeButton.className = 'remove-item-button';
-            removeButton.dataset.index = item.index;
+            removeButton.className = 'remove-button';
+            removeButton.addEventListener('click', function() {
+                removeFromCart(item.name);
+            });
 
             cartItemDiv.appendChild(itemImage);
             cartItemDiv.appendChild(itemNamePrice);
-            cartItemDiv.appendChild(quantityInput);
+            cartItemDiv.appendChild(quantityContainer);
             cartItemDiv.appendChild(removeButton);
             cartContainer.appendChild(cartItemDiv);
         });
     }
 
-    function calculateTotalAmount(cartItems) {
-        return cartItems.reduce((sum, item) => {
-            if (item && item.price && item.quantity) {
-                return sum + (item.price * item.quantity);
-            } else {
-                return sum;
+
+    function updateQuantity(itemName, quantityChange) {
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        const itemIndex = cartItems.findIndex(item => item.name === itemName);
+        if (itemIndex !== -1) {
+            cartItems[itemIndex].quantity += quantityChange;
+            if (cartItems[itemIndex].quantity <= 0) {
+                cartItems.splice(itemIndex, 1);
             }
-        }, 0).toFixed(2);
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            displayCart(cartItems);
+            updateTotalAmount(calculateTotalAmount(cartItems));
+        }
+    }
+
+    function removeFromCart(itemName) {
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        const itemIndex = cartItems.findIndex(item => item.name === itemName);
+        if (itemIndex !== -1) {
+            cartItems.splice(itemIndex, 1);
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            displayCart(cartItems);
+            updateTotalAmount(calculateTotalAmount(cartItems));
+        }
+    }
+
+    function calculateTotalAmount(cartItems) {
+        return cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
     }
 
     function updateTotalAmount(totalAmount) {
         document.getElementById('totalAmount').textContent = totalAmount;
     }
-    
+
     function groupIdenticalItems(cartItems) {
         const groupedItems = {};
         cartItems.forEach(item => {
@@ -250,17 +294,9 @@
         return Object.values(groupedItems);
     }
 
-    function updateQuantity(index, newQuantity) {
-        if (cartItems[index]) {
-            cartItems[index].quantity = newQuantity;
-            localStorage.setItem('cart', JSON.stringify(cartItems));
-            displayCart(cartItems);
-            const totalAmount = calculateTotalAmount(cartItems);
-            updateTotalAmount(totalAmount);
-        } else {
-            console.error("Invalid index:", index);
-        }
+    function submitOrder() {
+        document.getElementById('items').value = JSON.stringify(cartItems);
+        document.getElementById('order-form').submit();
     }
 </script>
-
 {% endblock %}

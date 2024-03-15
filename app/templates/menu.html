@@ -67,15 +67,18 @@
         border-color: #45a049;
     }
 
-
-
     .add-to-cart-btn {
         background-color: #4CAF50;
         color: white;
-        padding: 10px;
+        padding: 10px 20px;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .add-to-cart-btn:hover {
+        background-color: #45a049;
     }
 
     .cart-status {
@@ -115,15 +118,15 @@
         padding-bottom: 15px;
         padding-right: 60px;
         position: fixed;
-        bottom: 0;
-        right: 0;
+        bottom: 50%;
+        right: 3%;
         background-color: transparent;
-        /* z-index: 1000; */
     }
 
     .button {
-        font-weight: 400;
-        font-size: 30px;
+        font-weight: 450;
+        font-size: 35px;
+        font-style: italic;
         padding: 12px 50px;
         color: red;
         background-color: transparent;
@@ -201,9 +204,12 @@
             localStorage.setItem('cart', JSON.stringify(cartItems));
             updateCartCount();
             showNotificationPopup();
+
         } else {
             console.error("Invalid index:", index);
         }
+
+        localStorage.setItem('cart', JSON.stringify(cartItems));
     }
 
     function onPageClick(page) {
@@ -223,10 +229,8 @@
         const endIndex = startIndex + itemsPerPage;
         const displayedItems = menuData.slice(startIndex, endIndex);
 
-        // Calculate the number of columns based on the itemsPerPage
         const numColumns = Math.ceil(Math.sqrt(itemsPerPage));
 
-        // Create a container for the grid
         const gridContainer = document.createElement('div');
         gridContainer.className = 'menu-grid';
         gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
@@ -244,17 +248,18 @@
 
             const addToCartButton = document.createElement('button');
             addToCartButton.textContent = 'Add to Cart';
-            addToCartButton.addEventListener('click', () => addProductToCart(startIndex + index));
+            addToCartButton.className = 'add-to-cart-btn';
+            addToCartButton.addEventListener('click', () => {
+                addProductToCart(startIndex + index);
+            });
 
             menuItem.appendChild(itemImage);
             menuItem.appendChild(itemName);
             menuItem.appendChild(addToCartButton);
 
-            // Append each menu item to the grid container
             gridContainer.appendChild(menuItem);
         });
 
-        // Append the grid container to the menu list
         menuList.appendChild(gridContainer);
 
         const totalPages = Math.ceil(menuData.length / itemsPerPage);
@@ -266,7 +271,6 @@
             pagination.appendChild(pageItem);
         }
     }
-
 
 
     function setupPagination() {
@@ -291,8 +295,6 @@
             pagination.appendChild(pageItem);
         }
     }
-
-
 
     function showNotificationPopup() {
         const popup = document.getElementById('notification-popup');
