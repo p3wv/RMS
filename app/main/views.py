@@ -44,7 +44,10 @@ def RMS_index():
 
 @main.route('/menu')
 def menu():
-    return render_template('menu.html')
+    cart_items = session.get('cart', [])
+    page_number = request.args.get('page', default=1, type=int) 
+    return render_template('menu.html', cart_items=cart_items, page_number=page_number)
+
 
 @main.route('/cart', methods=['GET', 'POST'])
 def cart():

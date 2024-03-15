@@ -28,8 +28,6 @@
         border-bottom-style: groove;
         border-bottom-color: rgba(255, 255, 255, 0.322);
         border-bottom-width: 1px;
-        /* outline-style: ridge; */
-        /* outline-color: black; */
         align-items: center; 
     }
 
@@ -52,15 +50,13 @@
         color: white;
         font-size: 35px;
         font-weight: 350;
-        background-color: transparent;
+        background-color: black;
         width: 60px; 
     }
 
     .remove-button {
         background-color: transparent;
-        /* color: #ff5252a6; */
         border: none;
-        /* padding: 0.5%; */
         cursor: pointer;
         border-radius: 5px;
         font-size: 25px;
@@ -68,9 +64,9 @@
         margin-right: 20px;
     }
 
-    /* .remove-button:hover {
+    .remove-button:hover {
         color: #ef1b1b;
-    } */
+    }
 
     .buttons {
         display: flex;
@@ -79,7 +75,6 @@
         padding-right: 60px;
         padding-left: 60px;
         position: absolute;
-        /* bottom: 0; */
         right: 0;
         left: 0;
         background-color: transparent; 
@@ -92,9 +87,7 @@
         font-style: italic;
         padding: 12px 50px;
         color: tomato;
-        /* background-color: rgba(0, 0, 0, 0.204); */
         text-decoration: none;
-        /* transition: background-color 0.3s; */
         border-radius: 3%;
     }
 
@@ -103,9 +96,7 @@
         font-size: 27px;
         padding: 12px 50px;
         color: white;
-        /* background-color: rgba(0, 0, 0, 0.204); */
         text-decoration: none;
-        /* transition: background-color 0.3s; */
         border-radius: 3%;
     }
 
@@ -114,14 +105,11 @@
         font-size: 37px;
         padding: 12px 50px;
         color: greenyellow;
-        /* background-color: rgba(0, 0, 0, 0.204); */
         text-decoration: none;
-        /* transition: background-color 0.3s; */
         border-radius: 3%;
     }
 
     .button:hover {
-        /* background-color: #333;   */
         color: rgb(0, 255, 0);  
         text-decoration: none;
     }
@@ -134,83 +122,59 @@
     .main-container {
         margin-bottom: 85px;
     }
-
-    #totalAmount {
-        font-style: italic;
-    }
     
     .quantity-buttons {
         background-color: blue;
     }
 </style>
 
-<div class="main-container">
-    <h1>Your order:</h1>
-    <div id="cart-container"></div>
-    <div id="cart-list">
-        {% for item in cart_items %}
-        <div class="cart-item">
-            <img src="{{ item.image }}" alt="{{ item.name }}">
-            <p>{{ item.name }} - ${{ item.price }}</p>
-            <div class="quantity-buttons">
-                <button class="decrement-button" data-index="{{ loop.index0 }}">-</button>
-                <input type="number" class="quantity-input" min="0" value="{{ item.quantity }}" data-index="{{ loop.index0 }}">
-                <button class="increment-button" data-index="{{ loop.index0 }}">+</button>
-            </div>
-            <button class="remove-button" data-index="{{ loop.index0 }}">Remove</button>
+<h1>Your order:</h1>
+<div id="cart-list">
+    {% for item in cart_items %}
+    <div class="cart-item">
+        <img src="{{ item.image }}" alt="{{ item.name }}">
+        <p>{{ item.name }} - ${{ item.price }}</p>
+        <div class="quantity-buttons">
+            <button class="decrement-button" data-index="{{ loop.index0 }}">-</button>
+            <input type="number" min="0" value="{{ item.quantity }}" class="quantity-input" data-index="{{ loop.index }}">
+            <button class="increment-button" data-index="{{ loop.index }}">+</button>
+            <button class="remove-item-button" data-index="{{ loop.index }}">Remove from cart</button>
         </div>
-        {% endfor %}
     </div>
-    <div class="buttons">
-        <a href="{{ url_for('main.menu') }}" class="back-button"><span>&#8678;</span> BACK TO MENU</a>
-        <div class="total-button">TOTAL: $<span id="totalAmount"></span></div>
-        <a href="{{ url_for('main.order_confirmation') }}" class="button" onclick="proceedToCheckout()">CHECK, PLEASE! <span>&#10145;</span></a>
-    </div>
+    {% endfor %}
+</div>
+<div class="buttons">
+    <a href="{{ url_for('main.menu') }}" class="back-button"><span>&#8678;</span> BACK TO MENU</a>
+    <div class="total-button">TOTAL: $<span id="totalAmount"></span></div>
+    <a href="{{ url_for('main.order_confirmation') }}" class="button">CHECK, PLEASE! <span>&#10145;</span></a>
 </div>
 
 <form method="POST">
     <input type="hidden" name="items" id="items">
 </form>
 
-<form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
-</form>
-
+<form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}"></form>
 
 <script>
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    // alert(cartItems);
-    let quantityInputs;
-    // let totalAmount = 0;
     
+    document.addEventListener('DOMContentLoaded', function() {
+        displayCart(cartItems);
+        updateTotalAmount(calculateTotalAmount(cartItems));
 
-    function proceedToCheckout() {
-        fetch('/save_total_amount', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ totalAmount: totalAmount }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            window.location.href = '/order_confirmation';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('There was an error processing the order. Please try again.');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', function(event) {
+                const index = parseInt(event.target.dataset.index);
+                const newQuantity = parseInt(event.target.value);
+                if (!isNaN(index)) {
+                    updateQuantity(index, newQuantity);
+                } else {
+                    console.error("Invalid index:", index);
+                }
+            });
         });
-
-        document.getElementById('items').value = JSON.stringify(cartItems);
-        document.cookie = `cart_items=${JSON.stringify(cartItems)}`;
-
-        document.getElementById('order-form').submit();
-    }
-
+    });
 
     function displayCart(cartItems) {
         const cartContainer = document.getElementById('cart-list');
@@ -242,263 +206,35 @@
             quantityInput.className = 'quantity-input';
             quantityInput.min = '0';
             quantityInput.value = itemCount;
-
-            quantityInput.addEventListener('change', function(event) {
-                const index = parseInt(event.target.dataset.index);
-                const newQuantity = parseInt(event.target.value);
-                updateQuantity(index, newQuantity);
-                totalAmount = calculateTotalAmount(cartItems, newQuantity); // Update totalAmount
-                updateTotalAmount(totalAmount);
-            });
+            quantityInput.dataset.index = item.index; // Add dataset for item index
 
             const removeButton = document.createElement('button');
-            removeButton.textContent = 'Remove';
-            removeButton.className = 'remove-button';
-
-            removeButton.addEventListener('click', function(event) {
-                const index = parseInt(event.target.dataset.index);
-                if (!isNaN(index)) {
-                    removeItem(index);
-                    totalAmount = calculateTotalAmount(cartItems, newQuantity); // Update totalAmount
-                    updateTotalAmount(totalAmount);
-                } else {
-                    console.error("Invalid index:", index);
-                }
-            });
+            removeButton.textContent = 'Remove from cart';
+            removeButton.className = 'remove-item-button';
+            removeButton.dataset.index = item.index;
 
             cartItemDiv.appendChild(itemImage);
             cartItemDiv.appendChild(itemNamePrice);
             cartItemDiv.appendChild(quantityInput);
             cartItemDiv.appendChild(removeButton);
             cartContainer.appendChild(cartItemDiv);
-
-            function calculateTotalAmount(cartItems, itemCount) {
-                return cartItems.reduce((sum, item) => {
-                    if (item && item.price) {
-                        return sum + item.price * itemCount;
-                    } else {
-                        return sum;
-                    }
-                }, 0).toFixed(2);
-            }
-
-            // alert(item.quantity);
-
-            let totalAmount = calculateTotalAmount(cartItems, itemCount);
-
-            function updateTotalAmount(totalAmount) {
-                document.getElementById('totalAmount').textContent = totalAmount;
-            }
-
-            updateTotalAmount(totalAmount);
-
         });
-
-        
-
-        
-
-    }
-    
-
-    
-
-
-    function groupIdenticalItems(cartItems) {
-        const groupedItems = {};
-        cartItems.forEach(item => {
-            if (item && item.name) {
-                const itemName = item.name;
-                if (groupedItems[itemName]) {
-                    groupedItems[itemName].push(item);
-                } else {
-                    groupedItems[itemName] = [item];
-                }
-            }
-        });
-        return Object.values(groupedItems);
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        displayCart(cartItems);
-    });
-
-    function removeItem(index) {
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        if (index >= 0 && index < cartItems.length) {
-            cartItems.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cartItems));
-            displayCart(cartItems);
-        } else {
-            console.error("Invalid index:", index);
-        }
-    }
-
-
-    function updateQuantity(index, newQuantity) {
-        if (cartItems[index]) {
-            cartItems[index].quantity = newQuantity;
-            localStorage.setItem('cart', JSON.stringify(cartItems));
-            displayCart(cartItems);
-        }
-    }
-
-
-    
-</script>
-
-{% endblock %}
-
-<!-- <script>
-
-    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-
-    function proceedToCheckout() {
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        let totalAmount = calculateTotalAmount(cartItems);
-
-        fetch('/save_total_amount', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ totalAmount: totalAmount }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            window.location.href = '/order_confirmation';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('There was an error processing the order. Please try again.');
-        });
-
-        document.getElementById('items').value = JSON.stringify(cartItems);
-
-        document.querySelector('form').submit();
-    }
-
-    // function groupIdenticalItems(cartItems) {
-    //     const groupedItems = {};
-    //     cartItems.forEach(item => {
-    //         if (item) {
-    //             const itemName = item.name;
-    //             if (groupedItems[itemName]) {
-    //                 groupedItems[itemName].quantity += 1;
-    //             } else {
-    //                 groupedItems[itemName] = item;
-    //             }
-    //         }
-    //     });
-    //     return Object.values(groupedItems);
-    // }
-
-
-    function isIdentical(item1, item2) {
-        return item1.name === item2.name && item1.price === item2.price;
-    }
-    function updateQuantity(event, index) {
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        let groupedItems = groupIdenticalItems(cartItems);
-
-        // groupedItems[index] = Array(Number(event.target.value)).fill(groupedItems[index][0]);
-
-        const newQuantity = Number(event.target.value);
-
-        if (newQuantity === 0) {
-            groupedItems.splice(index, 1);
-        } else {
-            groupedItems[index] = Array(newQuantity).fill(groupedItems[index][0]);
-        }
-
-        let updatedCart = groupedItems.flat();
-
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-        displayCart();
-    }
-
-    function removeItem(index) {
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        let groupedItems = groupIdenticalItems(cartItems);
-
-        groupedItems.splice(index, 1);
-
-        let updatedCart = groupedItems.flat();
-
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-        displayCart();
-    }
-
-    function calculateTotalAmount(items) {
-        return items.reduce((sum, item) => {
-            if (item && item.price) {
-                return sum + item.price;
+    function calculateTotalAmount(cartItems) {
+        return cartItems.reduce((sum, item) => {
+            if (item && item.price && item.quantity) {
+                return sum + (item.price * item.quantity);
             } else {
                 return sum;
             }
         }, 0).toFixed(2);
     }
 
-
-    function updateTotalAmount() {
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        let totalAmount = calculateTotalAmount(cartItems);
+    function updateTotalAmount(totalAmount) {
         document.getElementById('totalAmount').textContent = totalAmount;
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        displayCart(cartItems);
-    });
-
-    function displayCart(cartItems) {
-        const cartContainer = document.getElementById('cart-list');
-        cartContainer.innerHTML = '';
-
-        if (!cartItems || cartItems.length === 0) {
-            cartContainer.textContent = 'Your cart is empty';
-            return;
-        }
-
-        const groupedItems = groupIdenticalItems(cartItems);
-
-        groupedItems.forEach(group => {
-            const item = group[0]; // Take the first item in the group
-            const itemCount = group.length; // Count the number of identical items in the group
-
-            const cartItemDiv = document.createElement('div');
-            cartItemDiv.className = 'cart-item';
-
-            const itemImage = document.createElement('img');
-            itemImage.src = item.image;
-            itemImage.alt = item.name;
-
-            const itemNamePrice = document.createElement('p');
-            itemNamePrice.textContent = `${item.name} - $${item.price} x ${itemCount}`;
-
-            const quantityInput = document.createElement('input');
-            quantityInput.type = 'number';
-            quantityInput.className = 'quantity-input';
-            quantityInput.min = '0';
-            quantityInput.value = itemCount;
-
-            const removeButton = document.createElement('button');
-            removeButton.textContent = '❌';
-            removeButton.className = 'remove-button';
-
-            cartItemDiv.appendChild(itemImage);
-            cartItemDiv.appendChild(itemNamePrice);
-            cartItemDiv.appendChild(quantityInput);
-            cartItemDiv.appendChild(removeButton);
-            cartContainer.appendChild(cartItemDiv);
-        });
-    }
-
+    
     function groupIdenticalItems(cartItems) {
         const groupedItems = {};
         cartItems.forEach(item => {
@@ -514,5 +250,17 @@
         return Object.values(groupedItems);
     }
 
+    function updateQuantity(index, newQuantity) {
+        if (cartItems[index]) {
+            cartItems[index].quantity = newQuantity;
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            displayCart(cartItems);
+            const totalAmount = calculateTotalAmount(cartItems);
+            updateTotalAmount(totalAmount);
+        } else {
+            console.error("Invalid index:", index);
+        }
+    }
+</script>
 
-</script> -->
+{% endblock %}
