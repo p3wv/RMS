@@ -138,6 +138,10 @@
     #totalAmount {
         font-style: italic;
     }
+    
+    .quantity-buttons {
+        background-color: blue;
+    }
 </style>
 
 <div class="main-container">
@@ -169,17 +173,17 @@
 </form>
 
 <form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
-    <!-- Form inputs go here -->
 </form>
 
 
 <script>
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    let removeButtons;
+    // alert(cartItems);
+    let quantityInputs;
+    // let totalAmount = 0;
+    
 
     function proceedToCheckout() {
-        let totalAmount = calculateTotalAmount(cartItems);
-
         fetch('/save_total_amount', {
             method: 'POST',
             headers: {
@@ -207,15 +211,6 @@
         document.getElementById('order-form').submit();
     }
 
-    function calculateTotalAmount(cartItems) {
-        return cartItems.reduce((sum, item) => {
-            if (item && item.price) {
-                return sum + item.price;
-            } else {
-                return sum;
-            }
-        }, 0).toFixed(2);
-    }
 
     function displayCart(cartItems) {
         const cartContainer = document.getElementById('cart-list');
@@ -229,8 +224,8 @@
         const groupedItems = groupIdenticalItems(cartItems);
 
         groupedItems.forEach(group => {
-            const item = group[0]; // Take the first item in the group
-            const itemCount = group.length; // Count the number of identical items in the group
+            const item = group[0];
+            const itemCount = group.length;
 
             const cartItemDiv = document.createElement('div');
             cartItemDiv.className = 'cart-item';
@@ -248,21 +243,66 @@
             quantityInput.min = '0';
             quantityInput.value = itemCount;
 
+            quantityInput.addEventListener('change', function(event) {
+                const index = parseInt(event.target.dataset.index);
+                const newQuantity = parseInt(event.target.value);
+                updateQuantity(index, newQuantity);
+                totalAmount = calculateTotalAmount(cartItems, newQuantity); // Update totalAmount
+                updateTotalAmount(totalAmount);
+            });
+
             const removeButton = document.createElement('button');
-            removeButton.textContent = '❌';
+            removeButton.textContent = 'Remove';
             removeButton.className = 'remove-button';
+
+            removeButton.addEventListener('click', function(event) {
+                const index = parseInt(event.target.dataset.index);
+                if (!isNaN(index)) {
+                    removeItem(index);
+                    totalAmount = calculateTotalAmount(cartItems, newQuantity); // Update totalAmount
+                    updateTotalAmount(totalAmount);
+                } else {
+                    console.error("Invalid index:", index);
+                }
+            });
 
             cartItemDiv.appendChild(itemImage);
             cartItemDiv.appendChild(itemNamePrice);
             cartItemDiv.appendChild(quantityInput);
             cartItemDiv.appendChild(removeButton);
             cartContainer.appendChild(cartItemDiv);
+
+            function calculateTotalAmount(cartItems, itemCount) {
+                return cartItems.reduce((sum, item) => {
+                    if (item && item.price) {
+                        return sum + item.price * itemCount;
+                    } else {
+                        return sum;
+                    }
+                }, 0).toFixed(2);
+            }
+
+            // alert(item.quantity);
+
+            let totalAmount = calculateTotalAmount(cartItems, itemCount);
+
+            function updateTotalAmount(totalAmount) {
+                document.getElementById('totalAmount').textContent = totalAmount;
+            }
+
+            updateTotalAmount(totalAmount);
+
         });
 
-        if (typeof updateTotalAmount === 'function') {
-            updateTotalAmount();
-        }
+        
+
+        
+
     }
+    
+
+    
+
 
     function groupIdenticalItems(cartItems) {
         const groupedItems = {};
@@ -279,93 +319,34 @@
         return Object.values(groupedItems);
     }
 
-    let quantityInputs;
-
     document.addEventListener('DOMContentLoaded', function() {
-        quantityInputs = document.querySelectorAll('.quantity-input');
-        // removeButtons = document.querySelectorAll('.remove-button');
-
-        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
         displayCart(cartItems);
-        updateTotalAmount();
-
-        quantityInputs.forEach(input => {
-            input.addEventListener('change', function(event) {
-                const index = parseInt(event.target.dataset.index);
-                const newQuantity = parseInt(event.target.value);
-                updateQuantity(newQuantity, index);
-                updateTotalAmount();
-            });
-        });
-
-        // removeButtons.forEach(button => {
-        //     button.addEventListener('click', function(event) {
-        //         const index = parseInt(event.target.dataset.index);
-        //         removeItem(index);
-        //         updateTotalAmount();
-        //     });
-        // });
-
-        const decrementButtons = document.querySelectorAll('.decrement-button');
-        decrementButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                const index = parseInt(event.target.dataset.index);
-                updateQuantity(index, -1); // Decrease quantity by 1
-                updateTotalAmount();
-            });
-        });
-
-        const incrementButtons = document.querySelectorAll('.increment-button');
-        incrementButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                const index = parseInt(event.target.dataset.index);
-                updateQuantity(index, 1); // Increase quantity by 1
-                updateTotalAmount();
-            });
-        });
-
-        const removeButtons = document.querySelectorAll('.remove-button');
-        removeButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                const index = parseInt(event.target.dataset.index);
-                removeItem(index);
-                updateTotalAmount();
-            });
-        });
     });
 
     function removeItem(index) {
         let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        if (cartItems[index]) {
+        if (index >= 0 && index < cartItems.length) {
             cartItems.splice(index, 1);
             localStorage.setItem('cart', JSON.stringify(cartItems));
             displayCart(cartItems);
+        } else {
+            console.error("Invalid index:", index);
         }
     }
 
-    function updateQuantity(newQuantity, index) {
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function updateQuantity(index, newQuantity) {
         if (cartItems[index]) {
-            if (!cartItems[index].quantity) {
-                cartItems[index].quantity = 0;
-            }
-            if (parseInt(newQuantity) === 0) {
-                cartItems.splice(index, 1);
-            } else {
-                const itemToAdd = { ...cartItems[index] };
-                cartItems.splice(index, 1, ...Array(parseInt(newQuantity)).fill(itemToAdd));
-            }
+            cartItems[index].quantity = newQuantity;
             localStorage.setItem('cart', JSON.stringify(cartItems));
             displayCart(cartItems);
         }
     }
 
-    function updateTotalAmount() {
-        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        let totalAmount = calculateTotalAmount(cartItems);
-        document.getElementById('totalAmount').textContent = totalAmount;
-    }
+
+    
 </script>
+
 {% endblock %}
 
 <!-- <script>

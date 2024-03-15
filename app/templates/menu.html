@@ -192,7 +192,7 @@
         .then(data => {
             console.log(data.message);
             let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-            cartItems.push(index);
+            cartItems.push(item);
             localStorage.setItem('cart', JSON.stringify(cartItems));
             updateCartCount();
             showNotificationPopup();
@@ -207,25 +207,6 @@
         displayMenu(currentPage);
         setupPagination();
     }
-
-
-
-    // function updateCartCount() {
-    //     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-    //     cartCount = cartItems.length;
-    //     console.log(cartCount);
-    //     const cartCountElement = document.getElementById('cart-count');
-    //     cartCountElement.textContent = cartCount.toString();
-    // }
-
-
-    // function showNotificationPopup() {
-    //     const popup = document.getElementById('notification-popup');
-    //     popup.style.display = 'block';
-    //     setTimeout(() => {
-    //         popup.style.display = 'none';
-    //     }, 2000);
-    // }
 
     function displayMenu(page) {
         const menuList = document.getElementById('menu-list');
@@ -314,6 +295,25 @@
 {% endblock %}
 
 <!-- <script>
+
+    // function updateCartCount() {
+    //     let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    //     cartCount = cartItems.length;
+    //     console.log(cartCount);
+    //     const cartCountElement = document.getElementById('cart-count');
+    //     cartCountElement.textContent = cartCount.toString();
+    // }
+
+
+    // function showNotificationPopup() {
+    //     const popup = document.getElementById('notification-popup');
+    //     popup.style.display = 'block';
+    //     setTimeout(() => {
+    //         popup.style.display = 'none';
+    //     }, 2000);
+    // }
+
+
     const menuData = [
         { name: "Appetizer 1", image: "/static/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg", price: 5.99 },
         { name: "Appetizer 2", image: "/static/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg", price: 5.99 },

@@ -104,8 +104,8 @@ def save_total_amount():
         return jsonify({'success': False, 'error': 'An error occurred while saving the total amount'})
 
 
-def calculate_total_amount(cart_items):
-    return sum(item['price'] for item in cart_items)
+# def calculate_total_amount(cart_items):
+#     return sum(item['price'] for item in cart_items)
 
 
 @main.route('/order_confirmation', methods=['GET', 'POST'])
