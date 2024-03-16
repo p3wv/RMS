@@ -169,7 +169,9 @@
 </div>
 
 <form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
+    {{ form.csrf_token }}
     <input type="hidden" name="items" id="items">
+    <input type="hidden" name="total_amount" id="total-amount">
 </form>
 
 <script>
@@ -179,6 +181,7 @@
         cartItems = JSON.parse(localStorage.getItem('cart')) || [];
         displayCart(cartItems);
         updateTotalAmount(calculateTotalAmount(cartItems));
+        document.getElementById('total-amount').value = calculateTotalAmount(cartItems);
     });
 
     function displayCart(cartItems) {
@@ -276,6 +279,7 @@
     }
 
     function updateTotalAmount(totalAmount) {
+        document.getElementById('total-amount').value = totalAmount;
         document.getElementById('totalAmount').textContent = totalAmount;
     }
 
@@ -295,8 +299,21 @@
     }
 
     function submitOrder() {
-        document.getElementById('items').value = JSON.stringify(cartItems);
+        // Serialize cart items to JSON string
+        const cartItemsJson = JSON.stringify(cartItems);
+
+        // Assign serialized cart items to 'items' hidden field
+        document.getElementById('items').value = cartItemsJson;
+
+        // Get total amount
+        const totalAmount = calculateTotalAmount(cartItems);
+
+        // Assign total amount to 'total-amount' hidden field
+        document.getElementById('total-amount').value = totalAmount;
+
+        // Submit the form
         document.getElementById('order-form').submit();
     }
+
 </script>
 {% endblock %}

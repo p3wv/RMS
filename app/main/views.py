@@ -2,11 +2,12 @@
 from datetime import datetime
 # import email
 import json
-from flask import flash, jsonify, render_template, session, redirect, url_for, request
+from flask import current_app, flash, jsonify, render_template, session, redirect, url_for, request
 # from flask import current_app, make_response, abort
 from flask_login import login_required, current_user
 
-from app.email import send_order_confirmation_email
+# from app.email import send_order_confirmation_email
+from ..email import send_order_confirmation_email
 # from app.email import send_email
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, NameForm, OrderForm
@@ -51,115 +52,85 @@ def menu():
 
 @main.route('/cart', methods=['GET', 'POST'])
 def cart():
+    form = OrderForm()
     cart_items = session.get('cart', [])
-    return render_template('cart.html', cart_items=cart_items)
+    return render_template('cart.html', form=form, cart_items=cart_items)
+
 
 total_amount_storage = None
-
-@main.route('/add_to_cart/<itemName>', methods=['POST'])
-def add_to_cart(itemName):
-    try:
-        cart = session.get('cart', [])
-        cart.append({'name': itemName, 'quantity': 1})
-
-        session['cart'] = cart
-
-        return jsonify({'success': True, 'message': f'Item "{itemName}" added to cart'})
-    except Exception as e:
-        print('Error:', e)
-        return jsonify({'success': False, 'error': str(e)})
 
 # @main.route('/add_to_cart/<itemName>', methods=['POST'])
 # def add_to_cart(itemName):
 #     try:
 #         cart = session.get('cart', [])
-
-#         cart.append(itemName)
+#         cart.append({'name': itemName, 'quantity': 1})
 
 #         session['cart'] = cart
-
-#         # if itemName in cart:
-#         #     cart[itemName]['quantity'] += 1
-#         # else:
-#         #     cart[itemName] = {'quantity': 1}
-
-#         # session['cart'] = cart
 
 #         return jsonify({'success': True, 'message': f'Item "{itemName}" added to cart'})
 #     except Exception as e:
 #         print('Error:', e)
-#         return jsonify({'success': False, 'error': 'An error occurred while adding the item to the cart'})
+#         return jsonify({'success': False, 'error': str(e)})
 
-@main.route('/save_total_amount', methods=['POST'])
-def save_total_amount():
-    global total_amount_storage
+# @main.route('/save_total_amount', methods=['POST'])
+# def save_total_amount():
+#     global total_amount_storage
 
-    try:
-        data = request.get_json()
-        total_amount = data.get('totalAmount')
+#     try:
+#         data = request.get_json()
+#         total_amount = data.get('totalAmount')
 
-        # Assuming you want to store the total amount globally on the server
-        total_amount_storage = total_amount
+#         total_amount_storage = total_amount
 
-        return jsonify({'success': True})
-    except Exception as e:
-        print('Error:', e)
-        return jsonify({'success': False, 'error': 'An error occurred while saving the total amount'})
-
-
-# def calculate_total_amount(cart_items):
-#     return sum(item['price'] for item in cart_items)
-
+#         return jsonify({'success': True})
+#     except Exception as e:
+#         print('Error:', e)
+#         return jsonify({'success': False, 'error': 'An error occurred while saving the total amount'})
 
 @main.route('/order_confirmation', methods=['GET', 'POST'])
 def order_confirmation():
-    global total_amount_storage
-    total_amount = total_amount_storage
-
-    if total_amount is None:
-        flash('Total amount not found')
-        redirect(url_for('.cart'))
-
     form = OrderForm()
+    total_amount = request.form.get('total_amount')
 
-    if form.validate_on_submit():
+    if not total_amount:
+        flash('Total amount not found')
+        return redirect(url_for('.cart'))
 
-        email = form.email.data
-        name = form.name.data
-        address = form.address.data
+    if request.method == 'POST':
+        try:
+            if form.validate_on_submit():
+                email = form.email.data
+                name = form.name.data
+                address = form.address.data
 
-        cart_items_str = request.form.get('cart_items') or request.cookies.get('cart_items')
-        print("Cart Items String:", cart_items_str)
+                if request.json is None:
+                    raise ValueError('No JSON data found in request')
 
-        if cart_items_str:
-            cart_items = json.loads(cart_items_str)
-        else:
-            cart_items = []
+                cart_items = request.json.get('items')
 
-        items_json = json.dumps(cart_items)
+                if not cart_items:
+                    raise ValueError('No cart items found in request')
 
-        order = Order(
-            email=email,
-            name=name,
-            address=address,
-            total=total_amount,
-            items=items_json
-        )
+                with db.session.begin_nested():
+                    order = Order(
+                        email=email,
+                        name=name,
+                        address=address,
+                        total=total_amount,
+                        items=json.dumps(cart_items)
+                    )
+                    db.session.add(order)
 
+                send_order_confirmation_email(email, cart_items)
+                        
+                flash('Order placed successfully! An email confirmation has been sent to you.', 'success')
+                return redirect(url_for('.ordered'))
 
-        db.session.add(order)
-        db.session.commit()
-
-        order_id = order.id
-        order = Order.query.get(order.id)
-        items = order.get_items()
-
-        print("order after from db: ", items)
-
-        send_order_confirmation_email(email, items)
-        
-        flash('Order placed successfully!', 'success')
-        return redirect(url_for('.ordered'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while processing your order. Please try again later.', 'error')
+            current_app.logger.error('Error processing order: %s', str(e))
+            return jsonify({'error': str(e)}), 500
 
     return render_template('order_confirmation.html', form=form, total_amount=total_amount)
 
