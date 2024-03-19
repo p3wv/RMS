@@ -5,72 +5,77 @@
 {% block page_content %}
 <style>
     h1 {
-        display: flexbox;
         text-align: center;
-        font-size: 50px;
-        font-weight: 400;
-        font-style: italic;
-        padding-bottom: 20px;
+        font-size: 2.5vw; /* Adjusted font size */
+        padding-bottom: 1.5vw; /* Adjusted padding */
         border-bottom-color: rgba(255, 255, 255, 0.322);
         border-bottom-style: groove;
+        font-weight: 400;
     }
 
     .menu-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted grid */
+        gap: 1.5vw; /* Adjusted gap */
         justify-items: center;
     }
 
     .menu-item {
-        margin-bottom: 20px;
+        margin-bottom: 1.5vw; /* Adjusted margin */
         text-align: center;
         font-weight: bold;
         color: #4CAF50;
     }
 
     .menu-item img {
-        max-width: 70%;
-        max-height: 70%;
+        max-width: 60%; /* Adjusted width */
+        max-height: 60%; /* Adjusted height */
         width: auto;
         height: auto;
         border: 2px solid #4CAF50;
         border-radius: 5px;
     }
 
+
+    .pagination-item {
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 2vw; /* Adjusted font size */
+    margin: 0 1vw; /* Adjusted margin */
+    padding: 0.8vw 2vw; /* Adjusted padding */
+    color: tomato; /* Text color similar to 'Order' button */
+    background-color: transparent;
+    border: 2px solid tomato; /* Border color similar to 'Order' button */
+    border-radius: 3%; /* Border radius similar to 'Order' button */
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination-item:hover,
+    .pagination-link:hover {
+        background-color: tomato; /* Background color on hover similar to 'Order' button */
+        color: white; /* Text color on hover similar to 'Order' button */
+    }
+
+    .pagination-item.active,
+    .pagination-link.active {
+        background-color: tomato; /* Background color for active page similar to 'Order' button */
+        color: white; /* Text color for active page similar to 'Order' button */
+    }
+
+
+
     .pagination {
         display: flex;
         justify-content: center;
+        margin-top: 2vw; /* Adjusted margin */
     }
 
-    .pagination-link {
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 24px;
-        margin: 0 5px;
-        padding: 8px 12px;
-        background-color: #4CAF50;
-        color: white;
-        border: 2px solid #4CAF50;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-    }
-
-    .pagination-link:hover {
-        background-color: #45a049;
-        border-color: #45a049;
-    }
-
-    .pagination-link.active {
-        background-color: #45a049;
-        border-color: #45a049;
-    }
 
     .add-to-cart-btn {
         background-color: #4CAF50;
         color: white;
-        padding: 10px 20px;
+        padding: 1vw 2vw; /* Adjusted padding */
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -83,17 +88,17 @@
 
     .cart-status {
         text-align: center;
-        font-size: 25px;
+        font-size: 2vw; /* Adjusted font size */
         font-weight: 300;
-        margin-top: 2%;
-        margin-bottom: 8%;
+        margin-top: 1.5vw; /* Adjusted margin */
+        margin-bottom: 3vw;
     }
 
     #cart-count {
         font-weight: bold;
         font-style: italic;
         color: red;
-        font-size: 30px;
+        font-size: 2.5vw; /* Adjusted font size */
     }
 
     .notification-popup {
@@ -105,42 +110,85 @@
         background-color: #4CAF50;
         color: white;
         text-align: center;
-        padding: 16px;
+        padding: 1.2vw; /* Adjusted padding */
         border-radius: 10px;
         z-index: 1;
-        width: 300px;
+        width: 30vw; /* Adjusted width */
         max-width: 80%;
     }
 
     .buttons {
         display: flex;
         justify-content: flex-end;
-        padding-bottom: 15px;
-        padding-right: 60px;
+        padding-bottom: 1.5vw; /* Adjusted padding */
+        padding-right: 3vw; /* Adjusted padding */
         position: fixed;
         bottom: 50%;
         right: 3%;
         background-color: transparent;
     }
 
-    .button {
-        font-weight: 450;
-        font-size: 35px;
+    .order-button {
+        font-weight: 400;
+        font-size: 2vw; /* Adjusted font size */
         font-style: italic;
-        padding: 12px 50px;
-        color: red;
+        padding: 0.8vw 3vw; /* Adjusted padding */
+        color: tomato;
         background-color: transparent;
-        text-decoration: none;
-        transition: background-color 0.3s;
+        border: 2px solid tomato;
+        border-radius: 3%;
+        transition: background-color 0.3s, color 0.3s;
     }
 
-    .button:hover {
-        color: rgb(0, 255, 0);
+    .order-button:hover {
         text-decoration: none;
+        background-color: tomato;
+        color: white;
     }
 
-    
+    @media screen and (max-width: 768px) {
+        .menu-grid {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjusted grid */
+        }
+
+        .menu-item img {
+            max-width: 50%; /* Adjusted width */
+            max-height: 50%; /* Adjusted height */
+        }
+
+        .pagination-link {
+            font-size: 3vw; /* Adjusted font size for smaller screens */
+            padding: 1vw 3vw; /* Adjusted padding for smaller screens */
+            margin: 0 0.5vw; /* Adjusted margin */
+        }
+
+        .cart-status {
+            font-size: 1.5vw; /* Adjusted font size */
+            margin-top: 1vw; /* Adjusted margin */
+            margin-bottom: 2vw; /* Adjusted margin */
+        }
+
+        #cart-count {
+            font-size: 2vw; /* Adjusted font size */
+        }
+
+        .notification-popup {
+            padding: 1.2vw; /* Adjusted padding */
+            width: 60vw; /* Adjusted width */
+        }
+
+        .buttons {
+            padding-bottom: 1vw; /* Adjusted padding */
+            padding-right: 2vw; /* Adjusted padding */
+        }
+
+        .order-button {
+            font-size: 3vw; /* Adjusted font size for smaller screens */
+            padding: 1vw 4vw; /* Adjusted padding for smaller screens */
+        }
+    }
 </style>
+
 
 <h1>Menu:</h1>
 
@@ -150,10 +198,11 @@
 
 <div id="menu-list"></div>
 
-<ul class="pagination" id="pagination"></ul>
+<ul class="pagination" id="pagination">
+</ul>
 
 <div class="buttons">
-    <a href="{{ url_for('main.cart') }}" class="button">ORDER <span>&#10145;</span></a>
+    <a href="{{ url_for('main.cart') }}" class="order-button">ORDER <span>&#10145;</span></a>
 </div>
 
 <div id="notification-popup" class="notification-popup">
@@ -163,8 +212,6 @@
 <form id="order-form" action="{{ url_for('main.order_confirmation') }}" method="POST">
     <input type="hidden" id="cart-items" name="cart_items" value="">
 </form>
-
-
 
 <script>
     const menuData = [
@@ -208,14 +255,11 @@
         } else {
             console.error("Invalid index:", index);
         }
-
-        localStorage.setItem('cart', JSON.stringify(cartItems));
     }
 
     function onPageClick(page) {
         currentPage = page;
         displayMenu(currentPage);
-        setupPagination();
     }
 
     function displayMenu(page) {
@@ -267,48 +311,17 @@
         for (let i = 1; i <= totalPages; i++) {
             const pageItem = document.createElement('li');
             pageItem.textContent = i;
+            pageItem.className = 'pagination-item'; 
             pageItem.addEventListener('click', () => onPageClick(i));
             pagination.appendChild(pageItem);
         }
     }
 
 
-    function setupPagination() {
-        const totalPages = Math.ceil(menuData.length / itemsPerPage);
-        const pagination = document.getElementById('pagination');
-        pagination.innerHTML = '';
-        for (let i = 1; i <= totalPages; i++) {
-            const pageItem = document.createElement('li');
-            const pageLink = document.createElement('a');
-            pageLink.textContent = i;
-            pageLink.href = `/menu?page=${i}`;
-            pageLink.className = 'pagination-link';
-            pageItem.appendChild(pageLink);
-            if (i === currentPage) {
-                pageItem.classList.add('active');
-            }
-            pageItem.addEventListener('click', () => {
-                currentPage = i;
-                displayMenu(currentPage);
-                setupPagination();
-            });
-            pagination.appendChild(pageItem);
-        }
-    }
-
-    function showNotificationPopup() {
-        const popup = document.getElementById('notification-popup');
-        popup.style.display = 'block';
-        setTimeout(() => {
-            popup.style.display = 'none';
-        }, 2000);
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         const currentPage = {{ page_number|default(1) }};
         cartItems = JSON.parse(localStorage.getItem('cart')) || [];
         displayMenu(currentPage);
-        setupPagination();
         updateCartCount();
     });
 

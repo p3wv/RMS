@@ -4,38 +4,37 @@
 
 {% block page_content %}
 <style>
-
     h1 {
-        display: flex;
-        justify-content: center;
-        padding-bottom: 20px;
+        text-align: center;
+        font-size: 3.5vw; /* Responsive font size */
+        padding-bottom: 2vw; /* Responsive padding */
         border-bottom-color: rgba(163, 50, 50, 0.469);
         border-bottom-style: groove;
         font-weight: 380;
     }
 
     #cart-list {
-        padding-left: 15px;
-        padding-right: 15px;
-        margin-bottom: 10px;
+        padding-left: 1.5vw; /* Responsive padding */
+        padding-right: 1.5vw; /* Responsive padding */
+        margin-bottom: 1vw; /* Responsive margin */
     }
 
     .cart-item {
         display: flex;
         justify-content: space-between;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        padding-top: 0.5vw; /* Responsive padding */
+        padding-bottom: 0.5vw; /* Responsive padding */
         border-bottom-style: groove;
         border-bottom-color: rgba(255, 255, 255, 0.322);
         border-bottom-width: 1px;
-        align-items: center; 
+        align-items: center;
     }
 
     .cart-item img {
         max-width: 100%;
         height: auto;
-        width: 75px;
-        height: 60px;
+        width: 75px; /* Maintain old width */
+        height: 60px; /* Maintain old height */
         border-radius: 5%;
     }
 
@@ -97,7 +96,7 @@
         position: absolute;
         right: 0;
         left: 0;
-        background-color: transparent; 
+        background-color: transparent;
         z-index: 1000;
     }
 
@@ -119,9 +118,7 @@
         color: white;
     }
 
-
     .back-button {
-        font-weight: 400;
         font-size: 27px;
         padding: 12px 50px;
         color: white;
@@ -139,7 +136,7 @@
     }
 
     .back-button:hover {
-        color: red;  
+        color: red;
         text-decoration: none;
     }
 
@@ -154,13 +151,67 @@
         font-size: 24px;
         margin-top: 20px;
     }
+
+    @media screen and (max-width: 768px) {
+        /* Adjustments for smaller screens */
+        .cart-item img {
+            width: 30vw; /* Responsive width */
+            max-height: 25vw; /* Responsive height */
+        }
+
+        p {
+            font-size: 3vw; /* Responsive font size */
+        }
+
+        .quantity-container {
+            font-size: 3vw; /* Responsive font size */
+        }
+
+        .quantity-button {
+            padding: 0.5vw 1vw; /* Responsive padding */
+        }
+
+        .remove-button {
+            font-size: 2.5vw; /* Responsive font size */
+            padding: 1vw 2vw; /* Responsive padding */
+            margin-right: 1vw; /* Responsive margin */
+        }
+
+        .buttons {
+            padding-bottom: 0.5vw; /* Responsive padding */
+            padding-right: 3vw; /* Responsive padding */
+            padding-left: 3vw; /* Responsive padding */
+        }
+
+        .button {
+            font-size: 3vw; /* Responsive font size */
+            padding: 1vw 4vw; /* Responsive padding */
+        }
+
+        .back-button {
+            font-size: 3vw; /* Responsive font size */
+            padding: 1vw 4vw; /* Responsive padding */
+        }
+
+        .total-button {
+            font-size: 4vw; /* Responsive font size */
+            padding: 1vw 4vw; /* Responsive padding */
+        }
+
+        .main-container {
+            margin-bottom: 15vw; /* Responsive margin */
+        }
+
+        .empty-cart-message {
+            font-size: 3vw; /* Responsive font size */
+            margin-top: 4vw; /* Responsive margin */
+        }
+    }
 </style>
 
 <h1>Your order:</h1>
 
-<div id="cart-list" class="cart-container">
-
-</div>
+<div id="cart-list" class="cart-container"></div>
 
 <div class="buttons">
     <a href="{{ url_for('main.menu') }}" class="back-button"><span>&#8678;</span> BACK TO MENU</a>
@@ -169,7 +220,9 @@
 </div>
 
 <form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
+    {{ form.csrf_token }}
     <input type="hidden" name="items" id="items">
+    <input type="hidden" name="total_amount" id="total-amount">
 </form>
 
 <script>
@@ -179,6 +232,7 @@
         cartItems = JSON.parse(localStorage.getItem('cart')) || [];
         displayCart(cartItems);
         updateTotalAmount(calculateTotalAmount(cartItems));
+        document.getElementById('total-amount').value = calculateTotalAmount(cartItems);
     });
 
     function displayCart(cartItems) {
@@ -276,6 +330,7 @@
     }
 
     function updateTotalAmount(totalAmount) {
+        document.getElementById('total-amount').value = totalAmount;
         document.getElementById('totalAmount').textContent = totalAmount;
     }
 
@@ -295,8 +350,21 @@
     }
 
     function submitOrder() {
-        document.getElementById('items').value = JSON.stringify(cartItems);
+        // Serialize cart items to JSON string
+        const cartItemsJson = JSON.stringify(cartItems);
+
+        // Assign serialized cart items to 'items' hidden field
+        document.getElementById('items').value = cartItemsJson;
+
+        // Get total amount
+        const totalAmount = calculateTotalAmount(cartItems);
+
+        // Assign total amount to 'total-amount' hidden field
+        document.getElementById('total-amount').value = totalAmount;
+
+        // Submit the form
         document.getElementById('order-form').submit();
     }
+
 </script>
 {% endblock %}

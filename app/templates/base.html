@@ -1,12 +1,13 @@
+{% import "bootstrap/wtf.html" as wtf %}
 {% extends "bootstrap/base.html" %}
 
 {% block title %}RMS{% endblock %}
 
 {% block head %}
 {{ super() }}
-
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js"></script>
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <style>
@@ -38,30 +39,21 @@
     .navbar-brand {
         font-size: 25px;
     }
-
-    /* .nav li{
-        border-right-color: rgba(255, 255, 255, 0.29);
-        border-right-style: groove;
-        background-color: ;
-    } */
-    
 </style>
-
 {% endblock %}
 
 {% block navbar %}
-<div class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-inverse" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>                        
             </button>
             <a class="navbar-brand" href="{{ url_for('main.RMS_index') }}">RMS</a>
         </div>
-        <div class="navbar-collapse collapse">
+        <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('main.index') }}">Home</a></li>
                 {% if current_user.is_authenticated %}
@@ -90,13 +82,13 @@
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
                     </ul>
                 </li>
-                
                 {% endif %}
             </ul>
         </div>
     </div>
-</div>
+</nav>
 {% endblock %}
+
 
 {% block content %}
 <div class="container">
@@ -110,6 +102,20 @@
     {% block page_content %}{% endblock %}
 </div>
 {% endblock %}
+
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service-worker.jss')
+            .then(function (registration) {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(function (error) {
+                console.error('Service Worker registration failed:', error);
+            });
+    });
+}
+</script>
 
 {% block scripts %}
 {{ super() }}
