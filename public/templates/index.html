@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}WELCOME{% endblock %}
+
+{% block page_content %}
+
+<style>
+    .page-header {
+        display: grid;
+        text-align: center;
+        justify-content: center;
+    }
+
+    h1 {
+        font-weight: 200;
+        font-size: 50px;
+        color: white;
+        padding: 1%;
+    }
+
+    h2 {
+        color: pink;
+        font-weight: 200;
+        font-size: 35px;
+    }
+
+    .start-btns {
+        font-weight: 350;
+        font-size: 30px;
+        font-style: italic;
+        padding: 25px 30px;
+        margin-top: 25px;
+        margin-bottom: 25px;
+        color: rgba(0, 255, 0, 0.84);
+        background-color: transparent;
+        text-decoration: none;
+        /* transition: background-color 0.3s; */
+        border-top-color: rgba(255, 192, 203, 0.584);
+        /* border-top-color: rgba(255, 0, 0, 0.517); */
+        border-top-style: dotted;
+        border-top-width: thick;
+    }
+
+    .start-btns:hover {
+        /* background-color: #333;   */
+        color: red;  
+        text-decoration: none;
+    }
+
+</style>
+
+<div class="page-header">   
+    <h1>WELCOME TO OUR RESTAURANT!</h1>
+    <h2>Take a look at our menu:</h2>
+    <a href="{{ url_for('main.menu') }}" class="start-btns">MENU</a>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Finish your order{% endblock %}
+
+{% block page_content %}
+<style>
+    #paypal-button-container {
+        display: grid;
+        padding-top: 20px;
+    }
+
+    #pay-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-weight: 400;
+        font-size: 26px;
+    }
+
+    #pay-button:hover {
+        color: red;
+    }
+
+    #pay-button:disabled {
+        background-color: #ccc;
+        color: #333;
+        cursor: not-allowed;
+    }
+
+    #pay-button:hover:disabled {
+        color: #333;
+    }
+
+    .col-md-4 {
+        display: grid;
+        padding: 10px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .center-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h1 {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom-color: rgba(255, 255, 255, 0.322);
+        border-bottom-style: groove;
+        font-weight: 380;
+        font-size: 40px;
+        width: 475px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 15px;
+        padding-right: 60px;
+        padding-left: 60px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background-color: transparent; 
+        z-index: 1000;
+    }
+
+    .button {
+        font-weight: 400;
+        font-size: 30px;
+        padding: 12px 50px;
+        color: white;
+        /* background-color: black; */
+        text-decoration: none;
+        transition: background-color 0.3s;  
+    }
+
+    .button:hover {
+        /* background-color: #333;   */
+        color: red;  
+        text-decoration: none;
+    }
+
+    #order-form {
+        color: rgba(255, 255, 255, 0.686);
+        font-style: italic;
+        font-size: 16px;
+        padding: 4%;
+    }
+
+</style>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z&currency=USD"></script>
+
+<div class="center-container">
+    <div class="col-md-4 mx-auto">
+        <h1>Help us handle the delivery:</h1>
+        <br>
+        <form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
+            {{ form.csrf_token }}
+            <input type="hidden" name="total_amount" value="{{ total_amount }}">
+            <p>Total Amount: ${{ total_amount }}</p>
+            {{ wtf.quick_form(form) }}
+            <button type="button" id="pay-button" onclick="startPayPalTransaction()" disabled>
+                Pay ${{ total_amount }} (PayPal)
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="buttons">
+    <a href="{{ url_for('main.cart') }}" class="button">
+        <span>&#8678;</span> BACK TO CART
+    </a>
+</div>
+
+<script>
+let paypalButtonClicked = false;
+
+function startPayPalTransaction() {
+    if (paypalButtonClicked) {
+        return;
+    }
+
+    paypalButtonClicked = true;
+
+    let totalAmount = parseFloat('{{ total_amount }}');
+
+    if (!totalAmount) {
+        console.error('Total amount not found.');
+        return;
+    }
+
+    // Prepare data object
+    let data = {
+        total_amount: totalAmount
+    };
+
+    // Send POST request with JSON data
+    fetch(orderConfirmationUrl, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        // Handle response here
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle error here
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const payButton = document.getElementById('pay-button');
+
+    const form = document.getElementById('order-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        
+        // Serialize form data to JSON format or use FormData API if needed
+        const formData = new FormData(form); // Use FormData API to serialize form data
+        
+        // Send form data using fetch
+        fetch('{{ url_for("main.order_confirmation") }}', {
+            method: 'POST',
+            body: formData // Send form data directly
+        })
+        .then(response => {
+            // Handle response
+            if (response.ok) {
+                // Redirect or show success message
+                window.location.href = '{{ url_for("main.ordered") }}';
+            } else {
+                // Handle error
+                console.error('Error:', response.statusText);
+                // Show error message to the user
+                alert('An error occurred. Please try again later.');
+            }
+        })
+        .catch(error => {
+            // Handle network error
+            console.error('Error:', error);
+            // Show error message to the user
+            alert('An error occurred. Please try again later.');
+        });
+    });
+});
+
+</script>
+
+{% endblock %}

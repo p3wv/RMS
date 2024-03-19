@@ -44,7 +44,4 @@ def create_app():
 
     app.cli.add_command(deploy_cli)
 
-    # from .outside import outside as outside_blueprint
-    # app.register_blueprint(outside_blueprint, url_prefix='/outside')
-
     return app

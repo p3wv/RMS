@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}RMS - Home{% endblock %}
+
+{% block page_content %}
+
+<style>
+    .page-header {
+        text-align: center;
+    }
+
+    h1 {
+        font-style: italic;
+    }
+
+    .start-btns {
+        display: inline-block;
+        text-align: center;
+        background-color: rgb(176, 0, 0);
+        padding: 12px;
+        color: white;
+        font-size: 20px;
+        font-weight: 500;
+        border-radius: 10px;
+        width: auto;
+    }
+
+    .start-btns:hover {
+        text-decoration: none;
+        color: greenyellow;
+        background-color: black;
+    }
+</style>
+
+<div class="page-header">
+    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+    <br>
+    <a href="{{ url_for('auth.login') }}" class="start-btns">Log in</a>
+    <a href="{{ url_for('auth.register') }}" class="start-btns">Register</a>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
