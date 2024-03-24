@@ -14,7 +14,6 @@ if os.environ.get('FLASK_COVERAGE'):
 
 
 app = create_app()
-# db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
 migrate = Migrate(app, db)

@@ -157,3 +157,16 @@ class Order(db.Model):
     def get_items(self):
         print(self.items)
         return json.loads(self.items)
+    
+class CartItem(db.Model):
+    __tablename__ = 'cart_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(64), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, product_name, price, quantity):
+        self.product_name = product_name
+        self.price = price
+        self.quantity = quantity

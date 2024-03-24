@@ -1,11 +1,12 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 dotenv_path = os.path.join(basedir, '.env')
-load_dotenv(dotenv_path)
+# load_dotenv(dotenv_path)
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY') or 'hard to guess literal string of text'
+    SESSION_TYPE = 'filesystem'
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = '465'
     MAIL_USE_TLS = False

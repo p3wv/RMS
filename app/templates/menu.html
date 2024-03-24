@@ -6,76 +6,83 @@
 <style>
     h1 {
         text-align: center;
-        font-size: 2.5vw; /* Adjusted font size */
-        padding-bottom: 1.5vw; /* Adjusted padding */
-        border-bottom-color: rgba(255, 255, 255, 0.322);
-        border-bottom-style: groove;
+        font-size: 2.5vw;
+        padding-bottom: 1.5vw;
+        border-bottom: 2px groove rgba(255, 255, 255, 0.322);
         font-weight: 400;
     }
 
     .menu-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted grid */
-        gap: 1.5vw; /* Adjusted gap */
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5vw;
         justify-items: center;
     }
 
     .menu-item {
-        margin-bottom: 1.5vw; /* Adjusted margin */
-        text-align: center;
-        font-weight: bold;
-        color: #4CAF50;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
     }
 
+    .menu-item-details {
+        display: flex;
+        margin-bottom: 5px;
+        padding: 5px;
+    }
+
+    .menu-item-name {
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+
     .menu-item img {
-        max-width: 60%; /* Adjusted width */
-        max-height: 60%; /* Adjusted height */
+        max-width: 60%;
+        max-height: 60%;
         width: auto;
         height: auto;
         border: 2px solid #4CAF50;
         border-radius: 5px;
     }
 
-
-    .pagination-item {
-    cursor: pointer;
-    font-weight: 400;
-    font-size: 2vw; /* Adjusted font size */
-    margin: 0 1vw; /* Adjusted margin */
-    padding: 0.8vw 2vw; /* Adjusted padding */
-    color: tomato; /* Text color similar to 'Order' button */
-    background-color: transparent;
-    border: 2px solid tomato; /* Border color similar to 'Order' button */
-    border-radius: 3%; /* Border radius similar to 'Order' button */
-    text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
+    .pagination-item,
+    .pagination-link {
+        cursor: pointer;
+        font-weight: 400;
+        font-size: 2vw;
+        margin: 0 1vw;
+        padding: 0.8vw 2vw;
+        color: tomato;
+        background-color: transparent;
+        border: 2px solid tomato;
+        border-radius: 3%;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
     }
 
     .pagination-item:hover,
     .pagination-link:hover {
-        background-color: tomato; /* Background color on hover similar to 'Order' button */
-        color: white; /* Text color on hover similar to 'Order' button */
+        background-color: tomato;
+        color: white;
     }
 
     .pagination-item.active,
     .pagination-link.active {
-        background-color: tomato; /* Background color for active page similar to 'Order' button */
-        color: white; /* Text color for active page similar to 'Order' button */
+        background-color: tomato;
+        color: white;
     }
-
-
 
     .pagination {
         display: flex;
         justify-content: center;
-        margin-top: 2vw; /* Adjusted margin */
+        margin-top: 2vw;
     }
-
 
     .add-to-cart-btn {
         background-color: #4CAF50;
         color: white;
-        padding: 1vw 2vw; /* Adjusted padding */
+        padding: 1vw 2vw;
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -88,9 +95,9 @@
 
     .cart-status {
         text-align: center;
-        font-size: 2vw; /* Adjusted font size */
+        font-size: 2vw;
         font-weight: 300;
-        margin-top: 1.5vw; /* Adjusted margin */
+        margin-top: 1.5vw;
         margin-bottom: 3vw;
     }
 
@@ -98,7 +105,7 @@
         font-weight: bold;
         font-style: italic;
         color: red;
-        font-size: 2.5vw; /* Adjusted font size */
+        font-size: 2.5vw;
     }
 
     .notification-popup {
@@ -110,18 +117,18 @@
         background-color: #4CAF50;
         color: white;
         text-align: center;
-        padding: 1.2vw; /* Adjusted padding */
+        padding: 1.2vw;
         border-radius: 10px;
         z-index: 1;
-        width: 30vw; /* Adjusted width */
+        width: 30vw;
         max-width: 80%;
     }
 
     .buttons {
         display: flex;
         justify-content: flex-end;
-        padding-bottom: 1.5vw; /* Adjusted padding */
-        padding-right: 3vw; /* Adjusted padding */
+        padding-bottom: 1.5vw;
+        padding-right: 3vw;
         position: fixed;
         bottom: 50%;
         right: 3%;
@@ -130,9 +137,9 @@
 
     .order-button {
         font-weight: 400;
-        font-size: 2vw; /* Adjusted font size */
+        font-size: 2vw;
         font-style: italic;
-        padding: 0.8vw 3vw; /* Adjusted padding */
+        padding: 0.8vw 3vw;
         color: tomato;
         background-color: transparent;
         border: 2px solid tomato;
@@ -141,54 +148,55 @@
     }
 
     .order-button:hover {
-        text-decoration: none;
         background-color: tomato;
         color: white;
+        text-decoration: none;
     }
 
     @media screen and (max-width: 768px) {
         .menu-grid {
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjusted grid */
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
         }
 
         .menu-item img {
-            max-width: 50%; /* Adjusted width */
-            max-height: 50%; /* Adjusted height */
+            max-width: 50%;
+            max-height: 50%;
         }
 
         .pagination-link {
-            font-size: 3vw; /* Adjusted font size for smaller screens */
-            padding: 1vw 3vw; /* Adjusted padding for smaller screens */
-            margin: 0 0.5vw; /* Adjusted margin */
+            font-size: 3vw;
+            padding: 1vw 3vw;
+            margin: 0 0.5vw;
         }
 
         .cart-status {
-            font-size: 1.5vw; /* Adjusted font size */
-            margin-top: 1vw; /* Adjusted margin */
-            margin-bottom: 2vw; /* Adjusted margin */
+            font-size: 1.5vw;
+            margin-top: 1vw;
+            margin-bottom: 2vw;
         }
 
         #cart-count {
-            font-size: 2vw; /* Adjusted font size */
+            font-size: 2vw;
         }
 
         .notification-popup {
-            padding: 1.2vw; /* Adjusted padding */
-            width: 60vw; /* Adjusted width */
+            padding: 1.2vw;
+            width: 60vw;
         }
 
         .buttons {
-            padding-bottom: 1vw; /* Adjusted padding */
-            padding-right: 2vw; /* Adjusted padding */
+            padding-bottom: 1vw;
+            padding-right: 2vw;
         }
 
         .order-button {
-            font-size: 3vw; /* Adjusted font size for smaller screens */
-            padding: 1vw 4vw; /* Adjusted padding for smaller screens */
+            font-size: 3vw;
+            padding: 1vw 4vw;
         }
     }
 </style>
 
+<!-- <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script> -->
 
 <h1>Menu:</h1>
 
@@ -214,121 +222,252 @@
 </form>
 
 <script>
-    const menuData = [
-        { name: "Appetizer 1", image: "/static/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg", price: 5.99 },
-        { name: "Appetizer 2", image: "/static/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg", price: 5.99 },
-        { name: "Main Course 1", image: "/static/Rogan-Josh-1190644860.jpg", price: 5.99 },
-        { name: "Main Course 2", image: "/static/SARCIADONG-ISDA-Filipino-fish-dish-IMG2.jpg.webp", price: 5.99 },
-        { name: "Dessert 1", image: "/static/tiramisu-dessert-easy-vegan.jpg.webp", price: 5.99 },
-        { name: "Dessert 2", image: "/static/easy-no-bake-desserts-645d1b63913ee.jpg", price: 5.99 },
-        { name: "Drinks 1", image: "/static/featured-starbucks-pink-drink-recipe.jpg", price: 5.99 },
-        { name: "Drinks 2", image: "/static/Strawberry-Water-006.webp", price: 5.99 }
-    ];
 
-    const itemsPerPage = 4;
-    let currentPage = 1;
-    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+let listProduct = document.querySelector('.listOfProducts');
 
-    function getTotalQuantity() {
-        let totalQuantity = 0;
-        cartItems.forEach(item => {
-            if (item && item.quantity != null) {
-                totalQuantity += item.quantity;
-            }
-        });
-        return totalQuantity;
-    }
+let listProducts = [];
 
-    function addProductToCart(index) {
-        if (typeof index === 'number' && index >= 0 && index < menuData.length) {
-            const item = menuData[index];
-            const existingItemIndex = cartItems.findIndex(cartItem => cartItem && cartItem.name === item.name);
-            if (existingItemIndex !== -1) {
-                cartItems[existingItemIndex].quantity++;
-            } else {
-                cartItems.push({ ...item, quantity: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cartItems));
-            updateCartCount();
-            showNotificationPopup();
+const initApp = () => {
+    fetch('products.json')
+    .then(response => response.json())
+    .then(data => {
+        listProducts = data;
+        console.log(listProducts);
+    })
+}
 
+initApp();
+
+function showProductGallery(product) {
+    var productHTML = "";
+    product.forEach(function(item) {
+        productHTML += '<div class="product-item">'+ 
+                    '<div class="product-id">' + item.id + '</div>' + 
+                    '<img src="product-images/' + item.photo + '">'+
+                    '<div class="productname">' + item.productName + '</div>'+
+                    '<div class="price">$<span>' + item.price + '</span></div>'+
+                    '<div class="cart-action">'+
+                        '<input type="text" class="product-quantity" name="quantity" value="1" size="2" />'+
+                        '<input type="submit" value="Add to Cart" class="add-to-cart" onClick="addToCart(this)" />'+
+                    '</div>'+
+                '</div>';
+                "<tr>";
+    
+    });
+    $('#product-item-container').html(productHTML);
+}
+
+const itemsPerPage = 4;
+let currentPage = 1;
+let cartItems = [];
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = {{ page_number|default(1) }};
+    cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    displayMenu(currentPage);
+    updateCartCount();
+});
+
+
+function getTotalQuantity() {
+    let totalQuantity = 0;
+    cartItems.forEach(item => {
+        if (item && item.quantity != null) {
+            totalQuantity += item.quantity;
+        }
+    });
+    return totalQuantity;
+}
+
+function addToCart(element) {
+	var productParent = $(element).closest('div.product-item');
+
+    var productId = $(productParent).find('.product-id').text();
+	var productName = $(productParent).find('.productname').text();
+    var price = $(productParent).find('.price span').text();
+	var quantity = $(productParent).find('.product-quantity').val();
+
+	var cartItem = {
+        productId: productId,
+		productName: productName,
+		price: price,
+		quantity: quantity
+	};
+
+    console.log("CartItem object before sending request:", cartItem);
+
+	var cartItemJSON = JSON.stringify(cartItem);
+
+	var cartArray = new Array();
+	if (sessionStorage.getItem('shopping-cart')) {
+		cartArray = JSON.parse(sessionStorage.getItem('shopping-cart'));
+	}
+	cartArray.push(cartItemJSON);
+
+	var cartJSON = JSON.stringify(cartArray);
+	sessionStorage.setItem('shopping-cart', cartJSON);
+    fetch('/cart/add', {
+        method: 'POST',
+        body: JSON.stringify(cartItem),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            showSuccessNotification();
         } else {
-            console.error("Invalid index:", index);
+            console.error("Failed to add item to server-side cart:", response.statusText);
         }
-    }
-
-    function onPageClick(page) {
-        currentPage = page;
-        displayMenu(currentPage);
-    }
-
-    function displayMenu(page) {
-        const menuList = document.getElementById('menu-list');
-        const pagination = document.getElementById('pagination');
-
-        menuList.innerHTML = '';
-        pagination.innerHTML = '';
-
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        const displayedItems = menuData.slice(startIndex, endIndex);
-
-        const numColumns = Math.ceil(Math.sqrt(itemsPerPage));
-
-        const gridContainer = document.createElement('div');
-        gridContainer.className = 'menu-grid';
-        gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
-
-        displayedItems.forEach((item, index) => {
-            const menuItem = document.createElement('div');
-            menuItem.className = 'menu-item';
-
-            const itemImage = document.createElement('img');
-            itemImage.src = item.image;
-            itemImage.alt = item.name;
-
-            const itemName = document.createElement('p');
-            itemName.textContent = `${item.name} - $${item.price}`;
-
-            const addToCartButton = document.createElement('button');
-            addToCartButton.textContent = 'Add to Cart';
-            addToCartButton.className = 'add-to-cart-btn';
-            addToCartButton.addEventListener('click', () => {
-                addProductToCart(startIndex + index);
-            });
-
-            menuItem.appendChild(itemImage);
-            menuItem.appendChild(itemName);
-            menuItem.appendChild(addToCartButton);
-
-            gridContainer.appendChild(menuItem);
-        });
-
-        menuList.appendChild(gridContainer);
-
-        const totalPages = Math.ceil(menuData.length / itemsPerPage);
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageItem = document.createElement('li');
-            pageItem.textContent = i;
-            pageItem.className = 'pagination-item'; 
-            pageItem.addEventListener('click', () => onPageClick(i));
-            pagination.appendChild(pageItem);
-        }
-    }
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentPage = {{ page_number|default(1) }};
-        cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-        displayMenu(currentPage);
-        updateCartCount();
     });
 
-    function updateCartCount() {
-        const cartCountElement = document.getElementById('cart-count');
-        cartCountElement.textContent = getTotalQuantity();
+	showCartTable();
+}
+
+function showCartTable() {
+	var cartRowHTML = "";
+	var itemCount = 0;
+	var grandTotal = 0;
+
+	var price = 0;
+	var quantity = 0;
+	var subTotal = 0;
+
+	if (sessionStorage.getItem('shopping-cart')) {
+		var shoppingCart = JSON.parse(sessionStorage.getItem('shopping-cart'));
+		itemCount = shoppingCart.length;
+
+		shoppingCart.forEach(function(item) {
+			var cartItem = JSON.parse(item);
+			price = parseFloat(cartItem.price);
+			quantity = parseInt(cartItem.quantity);
+			subTotal = price * quantity
+
+			cartRowHTML += "<tr>" +
+                "<td>" + cartItem.productId + "</td>" +
+				"<td>" + cartItem.productName + "</td>" +
+				"<td class='text-right'>$" + price.toFixed(2) + "</td>" +
+				"<td class='text-right'>" + quantity + "</td>" +
+				"<td class='text-right'>$" + subTotal.toFixed(2) + "</td>" +
+				"</tr>";
+
+			grandTotal += subTotal;
+		});
+	}
+
+	$('#cartTableBody').html(cartRowHTML);
+	$('#itemCount').text(itemCount);
+	$('#totalAmount').text("$" + grandTotal.toFixed(2));
+}
+
+
+function onPageClick(page) {
+    currentPage = page;
+    displayMenu(currentPage);
+}
+
+function displayMenu(page) {
+    const menuList = document.getElementById('menu-list');
+    const pagination = document.getElementById('pagination');
+
+    menuList.innerHTML = '';
+    pagination.innerHTML = '';
+
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const displayedItems = menuData.slice(startIndex, endIndex);
+
+    const numColumns = Math.ceil(Math.sqrt(itemsPerPage));
+
+    const gridContainer = document.createElement('div');
+    gridContainer.className = 'menu-grid';
+    gridContainer.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
+
+    displayedItems.forEach((item, index) => {
+        const menuItem = document.createElement('div');
+        menuItem.className = 'menu-item';
+
+        const itemImage = document.createElement('img');
+        itemImage.src = item.image;
+        itemImage.alt = item.name;
+
+        menuItem.appendChild(itemImage);
+
+        const namePriceContainer = document.createElement('div');
+        namePriceContainer.className = 'menu-item-details';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'menu-item-name';
+        nameSpan.textContent = item.name;
+
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'menu-item-price';
+        priceSpan.textContent = `$${item.price}`;
+
+        const namePriceText = document.createTextNode(`${nameSpan.textContent} - ${priceSpan.textContent}`);
+
+        namePriceContainer.appendChild(namePriceText);
+
+        menuItem.appendChild(namePriceContainer);
+
+        const addToCartButton = document.createElement('button');
+        addToCartButton.textContent = 'Add to Cart';
+        addToCartButton.className = 'add-to-cart-btn';
+        addToCartButton.addEventListener('click', () => {
+            const productName = item.name;
+            const price = item.price;
+            const quantity = 1;
+
+            const cartItem = {
+                productName,
+                price,
+                quantity
+            };
+            addToCart(cartItem);
+        });
+        menuItem.appendChild(addToCartButton);
+
+        gridContainer.appendChild(menuItem);
+    });
+
+    menuList.appendChild(gridContainer);
+
+    const totalPages = Math.ceil(menuData.length / itemsPerPage);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const pageItem = document.createElement('li');
+        pageItem.textContent = i;
+        pageItem.className = 'pagination-item';
+        pageItem.addEventListener('click', () => onPageClick(i));
+        pagination.appendChild(pageItem);
     }
+}
+
+
+function showSuccessNotification() {
+    const notificationPopup = document.getElementById('notification-popup');
+    notificationPopup.textContent = 'Item added to cart!';
+    notificationPopup.style.display = 'block';
+    setTimeout(() => {
+        notificationPopup.style.display = 'none';
+    }, 2000);
+    }
+
+
+function updateCartCount() {
+    const cartCountElement = document.getElementById('cart-count');
+    const totalQuantity = getTotalQuantity();
+
+    if (!totalQuantity) {
+        cartCountElement.textContent = '0';
+        cartCountElement.style.color = 'gray';
+    } else {
+        cartCountElement.textContent = totalQuantity;
+        cartCountElement.style.color = 'red';
+    }
+    }
+
 </script>
 
 {% endblock %}

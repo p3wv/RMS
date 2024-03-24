@@ -77,13 +77,11 @@
         font-size: 30px;
         padding: 12px 50px;
         color: white;
-        /* background-color: black; */
         text-decoration: none;
         transition: background-color 0.3s;  
     }
 
     .button:hover {
-        /* background-color: #333;   */
         color: red;  
         text-decoration: none;
     }
@@ -104,14 +102,11 @@
         <h1>Help us handle the delivery:</h1>
         <br>
         <form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
-            {{ form.csrf_token }}
-            <input type="hidden" name="total_amount" value="{{ total_amount }}">
-            <p>Total Amount: ${{ total_amount }}</p>
-            {{ wtf.quick_form(form) }}
-            <button type="button" id="pay-button" onclick="startPayPalTransaction()" disabled>
+            {{ form.hidden_tag() }}  {{ wtf.quick_form(form) }}  <button type="submit" id="pay-button" disabled>
                 Pay ${{ total_amount }} (PayPal)
             </button>
         </form>
+        
     </div>
 </div>
 
@@ -138,12 +133,10 @@ function startPayPalTransaction() {
         return;
     }
 
-    // Prepare data object
     let data = {
         total_amount: totalAmount
     };
 
-    // Send POST request with JSON data
     fetch(orderConfirmationUrl, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -165,36 +158,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const form = document.getElementById('order-form');
     form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
-        
-        // Serialize form data to JSON format or use FormData API if needed
-        const formData = new FormData(form); // Use FormData API to serialize form data
-        
-        // Send form data using fetch
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
         fetch('{{ url_for("main.order_confirmation") }}', {
             method: 'POST',
-            body: formData // Send form data directly
+            body: formData
         })
         .then(response => {
-            // Handle response
-            if (response.ok) {
-                // Redirect or show success message
-                window.location.href = '{{ url_for("main.ordered") }}';
-            } else {
-                // Handle error
-                console.error('Error:', response.statusText);
-                // Show error message to the user
-                alert('An error occurred. Please try again later.');
-            }
+            console.log('Form submission response:', response);
+        if (response.ok) {
+            localStorage.removeItem('cart');
+            window.location.href = '{{ url_for("main.ordered") }}';
+        } else {
+            console.error('Error:', response.statusText);
+            alert('An error occurred. Please try again later.');
+        }
         })
         .catch(error => {
-            // Handle network error
             console.error('Error:', error);
-            // Show error message to the user
             alert('An error occurred. Please try again later.');
         });
     });
 });
+
+
+
 
 </script>
 

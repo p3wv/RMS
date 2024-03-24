@@ -1,0 +1,50 @@
+[
+    { 
+        "id": 1, 
+        "name": "Appetizer 1",
+        "image": "/static/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg", 
+        "price": 5.99 
+    },
+    { 
+        "id": 2,
+        "name": "Appetizer 2",
+        "image": "/static/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg",
+        "price": 5.99
+    },
+    { 
+        "id": 3, 
+        "name": "Main Course 1", 
+        "image": "/static/Rogan-Josh-1190644860.jpg", 
+        "price": 5.99 
+    },
+    { 
+        "id": 4, 
+        "name": "Main Course 2", 
+        "image": "/static/SARCIADONG-ISDA-Filipino-fish-dish-IMG2.jpg.webp", 
+        "price": 5.99 
+    },
+    { 
+        "id": 5, 
+        "name": "Dessert 1", 
+        "image": "/static/tiramisu-dessert-easy-vegan.jpg.webp", 
+        "price": 5.99 
+    },
+    { 
+        "id": 6, 
+        "name": "Dessert 2", 
+        "image": "/static/easy-no-bake-desserts-645d1b63913ee.jpg", 
+        "price": 5.99 
+    },
+    { 
+        "id": 7, 
+        "name": "Drinks 1", 
+        "image": "/static/featured-starbucks-pink-drink-recipe.jpg", 
+        "price": 5.99 
+    },
+    { 
+        "id": 8, 
+        "name": "Drinks 2", 
+        "image": "/static/Strawberry-Water-006.webp", 
+        "price": 5.99 
+    }
+]

@@ -4,6 +4,7 @@ from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_session import Session
 from config import config
 from flask_login import LoginManager
 import os
@@ -25,6 +26,8 @@ def create_app():
     
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+
+    Session(app)
     
     bootstrap.init_app(app)
     mail.init_app(app)
@@ -45,3 +48,7 @@ def create_app():
     app.cli.add_command(deploy_cli)
 
     return app
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True)
