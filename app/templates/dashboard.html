@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block page_content %}
+
+<style>
+    .page-header {
+        text-align: center;
+    }
+
+    .orders {
+        text-align: center;
+    }
+</style>
+
+<div class="page-header">
+    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+</div>
+
+<div class="orders">
+    <h2>Orders</h2>
+    <ol>
+      <li>List item 1</li>
+      <li>List item 2</li>
+      <li>List item 3</li>
+    </ol>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}

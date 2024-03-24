@@ -36,6 +36,11 @@ def RMS_index():
                            known=session.get('known', False),
                            current_time=datetime.utcnow())
 
+
+@main.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
 @main.route('/menu')
 def menu():
     cart_items = session.get('cart', [])

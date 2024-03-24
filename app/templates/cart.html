@@ -226,73 +226,83 @@
 </form>
 
 <script>
-    let cartItems = [];
 
-    document.addEventListener('DOMContentLoaded', function() {
-        displayCart()
-    });
+let cartItems = [];
 
+document.addEventListener('DOMContentLoaded', function() {
+    displayCart()
+});
 
-    function displayCart() {
-        // const cartContainer = document.getElementById('cart-list');
-        // cartContainer.innerHTML = '';
+function displayCart() {
+    const cartContainer = document.getElementById('cart-list');
+    cartContainer.innerHTML = '';
 
-        // const groupedItems = groupIdenticalItems(cartItems);
+    cartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // groupedItems.forEach(group => {
-        //     const item = group[0];
-        //     const totalQuantity = group.reduce((total, currentItem) => total + currentItem.quantity, 0);
-
-        //     const cartItemDiv = document.createElement('div');
-        //     cartItemDiv.className = 'cart-item';
-
-        //     const itemImage = document.createElement('img');
-        //     itemImage.src = item.image;
-        //     itemImage.alt = item.name;
-
-        //     const itemNamePrice = document.createElement('p');
-        //     itemNamePrice.textContent = `${item.name} - $${item.price} x ${totalQuantity}`;
-
-        //     const quantityContainer = document.createElement('div');
-        //     quantityContainer.className = 'quantity-container';
-
-        //     const addButton = document.createElement('button');
-        //     addButton.textContent = '+';
-        //     addButton.className = 'quantity-button';
-        //     addButton.addEventListener('click', function() {
-        //         updateQuantity(item.name, 1);
-        //     });
-
-        //     const minusButton = document.createElement('button');
-        //     minusButton.textContent = '-';
-        //     minusButton.className = 'quantity-button';
-        //     minusButton.addEventListener('click', function() {
-        //         updateQuantity(item.name, -1);
-        //     });
-
-        //     const quantityDisplay = document.createElement('span');
-        //     quantityDisplay.textContent = totalQuantity;
-
-        //     quantityContainer.appendChild(minusButton);
-        //     quantityContainer.appendChild(quantityDisplay);
-        //     quantityContainer.appendChild(addButton);
-
-        //     const removeButton = document.createElement('button');
-        //     removeButton.textContent = 'Remove from cart';
-        //     removeButton.className = 'remove-button';
-        //     removeButton.addEventListener('click', function() {
-        //         removeFromCart(item.name);
-        //     });
-
-        //     cartItemDiv.appendChild(itemImage);
-        //     cartItemDiv.appendChild(itemNamePrice);
-        //     cartItemDiv.appendChild(quantityContainer);
-        //     cartItemDiv.appendChild(removeButton);
-        //     cartContainer.appendChild(cartItemDiv);
-        // });
-
-        showCartTable();
+    if (cartItems.length === 0) {
+    cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+    return;
     }
+
+    const totalAmount = calculateTotalAmount(cartItems);
+    updateTotalAmount(totalAmount);
+
+    cartItems.forEach(cartItemJSON => {
+    const cartItem = JSON.parse(cartItemJSON);
+
+    const cartItemDiv = document.createElement('div');
+    cartItemDiv.className = 'cart-item';
+
+    if (cartItem.image) {
+        const itemImage = document.createElement('img');
+        itemImage.src = cartItem.image;
+        itemImage.alt = cartItem.name;
+        cartItemDiv.appendChild(itemImage);
+    }
+
+    const itemNamePrice = document.createElement('p');
+    itemNamePrice.textContent = `${cartItem.name} - $${cartItem.price}`;
+    cartItemDiv.appendChild(itemNamePrice);
+
+    if (cartItem.quantity) { 
+        const quantityContainer = document.createElement('div');
+        quantityContainer.className = 'quantity-container';
+
+        const addButton = document.createElement('button');
+        addButton.textContent = '+';
+        addButton.className = 'quantity-button';
+        addButton.addEventListener('click', () => {
+        updateQuantity(cartItem.name, 1);
+        });
+
+        const minusButton = document.createElement('button');
+        minusButton.textContent = '-';
+        minusButton.className = 'quantity-button';
+        minusButton.addEventListener('click', () => {
+        updateQuantity(cartItem.name, -1);
+        });
+
+        const quantityDisplay = document.createElement('span');
+        quantityDisplay.textContent = cartItem.quantity;
+
+        quantityContainer.appendChild(minusButton);
+        quantityContainer.appendChild(quantityDisplay);
+        quantityContainer.appendChild(addButton);
+        cartItemDiv.appendChild(quantityContainer);
+    }
+
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove from cart';
+    removeButton.className = 'remove-button';
+    removeButton.addEventListener('click', () => {
+        removeFromCart(cartItem.name);
+    });
+    cartItemDiv.appendChild(removeButton);
+
+    cartContainer.appendChild(cartItemDiv);
+    });
+}
+
 
 
     function updateQuantity(itemName, quantityChange) {
