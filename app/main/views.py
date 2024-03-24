@@ -69,27 +69,6 @@ def add_to_cart(itemName):
         print('Error:', e)
         return jsonify({'success': False, 'error': str(e)})
 
-# @main.route('/add_to_cart/<itemName>', methods=['POST'])
-# def add_to_cart(itemName):
-#     try:
-#         cart = session.get('cart', [])
-
-#         cart.append(itemName)
-
-#         session['cart'] = cart
-
-#         # if itemName in cart:
-#         #     cart[itemName]['quantity'] += 1
-#         # else:
-#         #     cart[itemName] = {'quantity': 1}
-
-#         # session['cart'] = cart
-
-#         return jsonify({'success': True, 'message': f'Item "{itemName}" added to cart'})
-#     except Exception as e:
-#         print('Error:', e)
-#         return jsonify({'success': False, 'error': 'An error occurred while adding the item to the cart'})
-
 @main.route('/save_total_amount', methods=['POST'])
 def save_total_amount():
     global total_amount_storage
@@ -98,17 +77,12 @@ def save_total_amount():
         data = request.get_json()
         total_amount = data.get('totalAmount')
 
-        # Assuming you want to store the total amount globally on the server
         total_amount_storage = total_amount
 
         return jsonify({'success': True})
     except Exception as e:
         print('Error:', e)
         return jsonify({'success': False, 'error': 'An error occurred while saving the total amount'})
-
-
-# def calculate_total_amount(cart_items):
-#     return sum(item['price'] for item in cart_items)
 
 
 @main.route('/order_confirmation', methods=['GET', 'POST'])
