@@ -281,7 +281,7 @@ let cartItems = [];
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    const currentPage = {{ page_number|default(1) }};
+    // const currentPage = {{ page_number|default(1) }};
     cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     displayMenu(currentPage);
     updateCartCount();
