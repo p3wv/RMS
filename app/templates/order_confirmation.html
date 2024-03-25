@@ -117,6 +117,9 @@
 </div>
 
 <script>
+let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+let totalAmount = localStorage.getItem('totalAmount') ? parseFloat(localStorage.getItem('totalAmount')) : 0;
+
 let paypalButtonClicked = false;
 
 function startPayPalTransaction() {

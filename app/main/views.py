@@ -89,8 +89,18 @@ def add_to_cart():
 @main.route('/order_confirmation', methods=['GET', 'POST'])
 def order_confirmation():
     form = OrderForm()
-    cart_items = session.get('cart', {}).get('cartItems', [])
-    total_amount = session.get('cart', {}).get('totalAmount', 0)
+    
+    cart_items_json = request.form.get('cart_items')
+    
+    if cart_items_json:
+        cart_items = json.loads(cart_items_json)
+    else:
+        cart_items = []
+
+    total_amount = 0
+    for item in cart_items:
+        if item.get('price') and item.get('quantity'):
+            total_amount += item['price'] * item['quantity']
 
     if not total_amount:
         flash('Total amount not found')

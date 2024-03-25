@@ -196,10 +196,6 @@
     }
 </style>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script> -->
-
-
-
 <h1>Menu:</h1>
 
 <div class="cart-status">
@@ -277,11 +273,11 @@ var menuData = [
 
 const itemsPerPage = 4;
 let currentPage = 1;
+
 let cartItems = [];
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    // const currentPage = {{ page_number|default(1) }};
     cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     displayMenu(currentPage);
     updateCartCount();
@@ -299,21 +295,16 @@ function getTotalQuantity() {
 }
 
 function addToCart(cartItem) {
-  console.log("CartItem object before sending request:", cartItem);
-
-  const cartItemJSON = JSON.stringify(cartItem);
-
-  let cartArray = [];
-  if (localStorage.getItem('cart')) {
-    cartArray = JSON.parse(localStorage.getItem('cart'));
-  }
-  cartArray.push(cartItemJSON);
-
-  const updatedCartJSON = JSON.stringify(cartArray);
-  localStorage.setItem('cart', updatedCartJSON);
-
-
-  showSuccessNotification();
+    const foundItem = cartItems.find(item => item.productId === cartItem.productId);
+    if (foundItem) {
+        foundItem.quantity = foundItem.quantity ? foundItem.quantity + 1 : 1;
+    } else {
+        cartItem.quantity = 1;
+        cartItems.push(cartItem);
+    }
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    updateCartCount();
+    showSuccessNotification();
 }
 
 function onPageClick(page) {
@@ -370,19 +361,18 @@ function displayMenu(page) {
         addToCartButton.className = 'add-to-cart-btn';
         addToCartButton.addEventListener('click', () => {
             const productId = item.id;
-            const productImage = item.image;
             const productName = item.name;
+            const productImage = item.image;
             const price = item.price;
-            const quantity = 1;
 
             const cartItem = {
                 productId,
-                productImage,
                 productName,
-                price,
-                quantity
+                productImage,
+                price
             };
             addToCart(cartItem);
+            console.log(cartItems);
         });
         menuItem.appendChild(addToCartButton);
 
@@ -414,16 +404,12 @@ function showSuccessNotification() {
 
 
 function updateCartCount() {
-    const cartCountElement = document.getElementById('cart-count');
+    const cartCountSpan = document.getElementById('cart-count');
     const totalQuantity = getTotalQuantity();
+    cartCountSpan.textContent = totalQuantity;
 
-    if (!totalQuantity) {
-        cartCountElement.textContent = '0';
-        cartCountElement.style.color = 'gray';
-    } else {
-        cartCountElement.textContent = totalQuantity;
-        cartCountElement.style.color = 'red';
-    }
+    const cartItemsJson = JSON.stringify(cartItems);
+    document.getElementById('cart-items').value = cartItemsJson;
 }
 
 </script>

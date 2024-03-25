@@ -12,6 +12,24 @@
 
     .orders {
         text-align: center;
+        margin: 0 auto;
+        width: 80%;
+    }
+
+    .orders table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 5%;
+    }
+
+    .orders th, .orders td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .orders th {
+        background-color: #f2f2f2;
     }
 </style>
 
@@ -20,12 +38,26 @@
 </div>
 
 <div class="orders">
-    <h2>Orders</h2>
-    <ol>
-      <li>List item 1</li>
-      <li>List item 2</li>
-      <li>List item 3</li>
-    </ol>
+    <h2>Current orders:</h2>
+    <br>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>12345</td>
+          <td>$100.00</td>
+        </tr>
+        <tr>
+          <td>54321</td>
+          <td>$50.50</td>
+        </tr>
+        </tbody>
+    </table>
   </div>
 
 {% endblock %}
