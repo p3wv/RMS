@@ -37,6 +37,11 @@ def RMS_index():
                            current_time=datetime.utcnow())
 
 
+# table_name = 'orders'  # Replace with the actual table name
+# drop_table_query = f"DROP TABLE {table_name}"
+
+# cursor.execute(drop_table_query)
+
 @main.route('/dashboard')
 def dashboard():
     import sqlite3
@@ -45,11 +50,6 @@ def dashboard():
     cursor = connection.cursor()
 
 
-
-    # table_name = 'orders'  # Replace with the actual table name
-    # drop_table_query = f"DROP TABLE {table_name}"
-
-    # cursor.execute(drop_table_query)
     connection.commit()
 
 
@@ -74,15 +74,15 @@ def dashboard():
         else:
             try:
                 order_items = json.loads(order_items)
-            except json.JSONDecodeError:
-                print(f"Skipping order {order_id} due to invalid JSON for items")
-                continue
-                
-            if order_items:
                 orders.append({
                     "id": order_id,
                     "items": order_items
                 })
+            except json.JSONDecodeError:
+                print(f"Skipping order {order_id} due to invalid JSON for items")
+                continue
+
+    print("Orders:", orders)
 
     connection.close()
     

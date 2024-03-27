@@ -6,58 +6,53 @@
 {% block page_content %}
 
 <style>
-    h2 {
-      font-size: 3rem;
-      font-style: italic;
-      color: white;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .page-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .orders {
-        text-align: center;
-        margin: 0 auto;
-        width: 80%;
-        padding: 1rem;
-    }
-
     .orders table {
-        border-collapse: collapse;
-        border: 1px solid #ddd;
-        width: 100%;
-        margin-bottom: 5%;
-    }
+    border-collapse: collapse;
+    width: 100%;
+  }
 
-    .orders th, .orders td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: left;
-    }
+  .orders th, .orders td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+  }
 
-    .orders th {
-        background-color: #f2f2f2;
-    }
+  .orders th {
+      background-color: #f2f2f2;
+  }
 
-    .done-selector {
-        opacity: 1;
-        transition: opacity 0.5s ease-in-out;
-    }
+  .order-selector {
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+  }
 
-    .done-selector[type="checkbox"]:checked + td {
-        opacity: 0;
-    }
+  .order-selector[type="checkbox"]:checked + td {
+      opacity: 0;
+  }
 
-    .page-header h1 {
-        font-size: 2rem;
-        font-style: italic;
-        color: #007bff;
-        margin-bottom: 1rem;
-    }
+  .fade-out {
+      animation: fadeOut 1s ease-in-out forwards;
+  }
+
+  @keyframes fadeOut {
+      from {
+          opacity: 1;
+      }
+      to {
+          opacity: 0;
+          visibility: hidden;
+      }
+  }
+
+  .orders td:nth-child(2) {
+      font-weight: bold;
+  }
+
+  .orders td:nth-child(3) {
+      font-style: italic;
+      color: #007bff;
+  }
+
 </style>
 
 <div class="page-header">
@@ -70,48 +65,45 @@
     <table>
       <thead>
         <tr>
-          <th><input type="checkbox" class="select-all"></th>
           <th>Order ID</th>
           <th>Items</th>
+          <th>Select</th>
         </tr>
       </thead>
       <tbody>
         {% for order in orders %}
-        <tr>
-          <td><input type="checkbox" class="done-selector"></td>
-          <td>{{ order.id }}</td>
-          {% if order.items %}
-            {% for item in order.items %}
-              <td>{{ item }}</td>
-            {% endfor %}
-          {% else %}
-            <td>No items</td>
-          {% endif %}
-        </tr>
+            {% if order['items'] %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>
+                    <ul>
+                        {% for item in order['items'] %}
+                        <li>{{ item['productName'] }}, {{ item['quantity'] }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td><input type="checkbox" class="order-selector"></td>
+            </tr>
+            {% endif %}
         {% endfor %}
-        </tbody>
+    </tbody>    
     </table>
-  </div>
+</div>
 
-  <script>
-    const selectAllCheckbox = document.querySelector('.select-all');
-    const doneCheckboxes = document.querySelectorAll('.done-selector');
-
-    selectAllCheckbox.addEventListener('change', (event) => {
-      const isChecked = event.target.checked;
-      doneCheckboxes.forEach(checkbox => checkbox.checked = isChecked);
-    });
-
-    doneCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', (event) => {
-      const row = event.target.parentElement.parentElement;
-      row.classList.toggle('done');
-    });
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const orderSelectors = document.querySelectorAll('.order-selector');
+      orderSelectors.forEach(function(selector) {
+          selector.addEventListener('change', function() {
+              const row = selector.closest('tr');
+              if (selector.checked) {
+                  row.classList.add('fade-out');
+              } else {
+                  row.classList.remove('fade-out');
+              }
+          });
+      });
   });
-  </script>
+</script>
 
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
 {% endblock %}
