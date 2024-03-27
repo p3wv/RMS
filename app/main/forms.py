@@ -2,17 +2,19 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, HiddenField, SelectField, StringField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
-from flask_wtf.csrf import CSRFProtect
+# from flask_wtf.csrf import CSRFProtect
 
 from ..models import Role, User
 
+style={'class': 'submit-button', 'style': 'display: flex; align-items: center; justify-content: center;'}
 
 class OrderForm(FlaskForm):
     name = StringField('Name visible on your order:', validators=[DataRequired()])
     address = StringField('Delivery address:', validators=[DataRequired(), Length(6, 20)])
     email = StringField('Your e-mail (we will use it for contact purposes only)', validators=[DataRequired(), Length(1, 64), Email()])
     total_amount = HiddenField()
-    submit = SubmitField('Submit')
+    items = HiddenField()
+    submit = SubmitField('Submit', render_kw=style)
 
 
     class Meta:

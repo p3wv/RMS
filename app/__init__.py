@@ -5,7 +5,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_session import Session
-from config import config
+from app.config import config
 from flask_login import LoginManager
 import os
 from .commands import deploy_cli

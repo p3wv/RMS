@@ -256,10 +256,10 @@
 </div>
 
 <form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
-    {{ form.csrf_token }}
-    <input type="hidden" name="items" id="items">
-    <input type="hidden" name="total_amount" id="total-amount">
+  {{ form.csrf_token }}
+  <input type="hidden" name="items" value="{{ cartItemsJSON }}">  <input type="hidden" name="total_amount" id="total-amount">
 </form>
+
 
 <script>
 let cartItems = [];
@@ -268,6 +268,8 @@ let totalAmount = 0;
 function clearCart() {
   localStorage.removeItem('cart');
   cartItems = [];
+
+  totalAmount = 0;
   displayCart();
 }
 
@@ -310,7 +312,7 @@ function displayCart() {
   const cartContainer = document.getElementById('cart-list');
   cartContainer.innerHTML = '';
 
-  console.log(cartItems);
+  console.log(groupedCartItems);
 
   groupedCartItems.forEach((cartItem) => {
     const cartItemElement = document.createElement('div');
@@ -332,11 +334,15 @@ function displayCart() {
 
     // Potentially add elements for price, remove button, etc.
 
+    // const removeButton = document.createElement('button');
+    // removeButton.className = 'remove-button';
+    // removeButton.addEventListener('click', () => removeFromCart());
 
     cartItemElement.appendChild(itemImageElement);
     cartItemElement.appendChild(itemNameElement);
     cartItemElement.appendChild(itemPriceElement);
     cartItemElement.appendChild(quantityDisplay);
+    // cartItemElement.appendChild(removeButton);
     // ... (append other elements)
 
     cartContainer.appendChild(cartItemElement);
@@ -402,14 +408,15 @@ function updateQuantity(itemName, change) {
   }
 }
 
+
 function submitOrder() {
-  const cartItemsJSON = JSON.stringify(cartItems);
-  const totalAmount = calculateTotalAmount(cartItems);
+    const cartItemsJSON = JSON.stringify(cartItems);
 
-  document.getElementById('items').value = cartItemsJSON;
-  document.getElementById('total-amount').value = totalAmount;
+    // document.getElementById('items').value = cartItemsJSON;
+  
+    document.getElementById('total-amount').value = totalAmount;
 
-  document.getElementById('order-form').submit();
+    document.getElementById('order-form').submit();
 }
 
 </script>

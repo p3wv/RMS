@@ -93,18 +93,23 @@
         padding: 4%;
     }
 
+    
+
 </style>
 
 <script src="https://www.paypal.com/sdk/js?client-id=AbJITLKvPRfdT6Y3Lcd7VLNLfa45bS8WQWQ7F3_Wq6WJTPlzqZMajdvoAfLuQxps1GJhdNGLAPBNG0_Z&currency=USD"></script>
-
+<!-- <button type="submit" id="pay-button" disabled>
+                Pay ${{ total_amount }} (PayPal)
+            </button> -->
 <div class="center-container">
     <div class="col-md-4 mx-auto">
         <h1>Help us handle the delivery:</h1>
         <br>
-        <form id="order-form" method="POST" action="{{ url_for('main.order_confirmation') }}">
-            {{ form.hidden_tag() }}  {{ wtf.quick_form(form) }}  <button type="submit" id="pay-button" disabled>
-                Pay ${{ total_amount }} (PayPal)
-            </button>
+        <form method="POST" id="order-form" action="{{ url_for('main.order_confirmation') }}">
+            <input type="hidden" name="items" id="cart-items-input">
+            {{ form.hidden_tag() }}
+            {{ wtf.quick_form(form) }} 
+            
         </form>
         
     </div>
@@ -117,78 +122,75 @@
 </div>
 
 <script>
-let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-let totalAmount = localStorage.getItem('totalAmount') ? parseFloat(localStorage.getItem('totalAmount')) : 0;
-
-let paypalButtonClicked = false;
-
-function startPayPalTransaction() {
-    if (paypalButtonClicked) {
-        return;
-    }
-
-    paypalButtonClicked = true;
-
-    let totalAmount = parseFloat('{{ total_amount }}');
-
-    if (!totalAmount) {
-        console.error('Total amount not found.');
-        return;
-    }
-
-    let data = {
-        total_amount: totalAmount
-    };
-
-    fetch(orderConfirmationUrl, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json'
+    document.addEventListener('DOMContentLoaded', function () {
+        const orderForm = document.getElementById('order-form');
+        const cartItemsInput = document.getElementById('cart-items-input');
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalAmount = localStorage.getItem('totalAmount') ? parseFloat(localStorage.getItem('totalAmount')) : 0;
+    
+        cartItemsInput.value = JSON.stringify(cartItems);
+    
+        let paypalButtonClicked = false;
+    
+        function startPayPalTransaction() {
+            if (paypalButtonClicked) {
+                return;
+            }
+    
+            paypalButtonClicked = true;
+    
+            let totalAmount = parseFloat('{{ total_amount }}');
+    
+            if (!totalAmount) {
+                console.error('Total amount not found.');
+                return;
+            }
+    
+            let data = {
+                total_amount: totalAmount
+            };
+    
+            fetch(orderConfirmationUrl, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                // Handle response here
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error here
+            });
         }
-    })
-    .then(response => {
-        // Handle response here
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Handle error here
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    const payButton = document.getElementById('pay-button');
-
-    const form = document.getElementById('order-form');
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const formData = new FormData(form);
-
-        fetch('{{ url_for("main.order_confirmation") }}', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            console.log('Form submission response:', response);
-        if (response.ok) {
-            localStorage.removeItem('cart');
-            window.location.href = '{{ url_for("main.ordered") }}';
-        } else {
-            console.error('Error:', response.statusText);
-            alert('An error occurred. Please try again later.');
-        }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again later.');
+    
+        // Add event listener for form submission
+        orderForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            const formData = new FormData(orderForm);
+    
+            fetch('{{ url_for("main.order_confirmation") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('Form submission response:', response);
+                if (response.ok) {
+                    localStorage.removeItem('cart');
+                    window.location.href = '{{ url_for("main.ordered") }}';
+                } else {
+                    console.error('Error:', response.statusText);
+                    alert('An error occurred. Please try again later.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
         });
     });
-});
-
-
-
-
 </script>
-
 {% endblock %}

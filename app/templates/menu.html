@@ -215,58 +215,54 @@
     Item has been added to your order
 </div>
 
-<form id="order-form" action="{{ url_for('main.order_confirmation') }}" method="POST">
-    <input type="hidden" id="cart-items" name="cart_items" value="">
-</form>
-
 <script>
 var menuData = [
     { 
         "id": 1, 
         "name": "Appetizer 1",
-        "image": "/static/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg", 
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/Appetizer-Tortilla-Pinwheels_EXPS_HCA17_8166_B12_15_4b-3.jpg?alt=media&token=2c531bc8-2dab-4855-80d8-50db680ce6bf",
         "price": 5.99 
     },
     { 
         "id": 2,
         "name": "Appetizer 2",
-        "image": "/static/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg",
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/Cucumber-Shrimp-Appetizers-Square-1200-1.jpg?alt=media&token=f34a58cf-77a9-4c2b-a38d-6c6c9ed1b668",
         "price": 5.99
     },
     { 
         "id": 3, 
         "name": "Main Course 1", 
-        "image": "/static/Rogan-Josh-1190644860.jpg", 
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/Rogan-Josh-1190644860.jpg?alt=media&token=2e082b99-4a22-4033-95da-ed9b24026a98", 
         "price": 5.99 
     },
     { 
         "id": 4, 
         "name": "Main Course 2", 
-        "image": "/static/SARCIADONG-ISDA-Filipino-fish-dish-IMG2.jpg.webp", 
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/SARCIADONG-ISDA-Filipino-fish-dish-IMG2.jpg.webp?alt=media&token=c2e32b71-e4e4-4f39-91cd-7097f3834d3a", 
         "price": 5.99 
     },
     { 
         "id": 5, 
         "name": "Dessert 1", 
-        "image": "/static/tiramisu-dessert-easy-vegan.jpg.webp", 
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/Strawberry-Water-006.webp?alt=media&token=0f216404-7228-42a9-a4f0-89597ead941f", 
         "price": 5.99 
     },
     { 
         "id": 6, 
         "name": "Dessert 2", 
-        "image": "/static/easy-no-bake-desserts-645d1b63913ee.jpg", 
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/easy-no-bake-desserts-645d1b63913ee.jpg?alt=media&token=9557e48d-6723-494a-b610-9b030b90880e", 
         "price": 5.99 
     },
     { 
         "id": 7, 
         "name": "Drinks 1", 
-        "image": "/static/featured-starbucks-pink-drink-recipe.jpg", 
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/featured-starbucks-pink-drink-recipe.jpg?alt=media&token=73338b96-9cb0-477e-8157-174067a36f24", 
         "price": 5.99 
     },
     { 
         "id": 8, 
         "name": "Drinks 2", 
-        "image": "/static/Strawberry-Water-006.webp", 
+        "image": "https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/tiramisu-dessert-easy-vegan.jpg.webp?alt=media&token=4b7bbab0-333d-43c4-962c-d7aedb10f619", 
         "price": 5.99 
     }
 ];
@@ -407,9 +403,6 @@ function updateCartCount() {
     const cartCountSpan = document.getElementById('cart-count');
     const totalQuantity = getTotalQuantity();
     cartCountSpan.textContent = totalQuantity;
-
-    const cartItemsJson = JSON.stringify(cartItems);
-    document.getElementById('cart-items').value = cartItemsJson;
 }
 
 </script>

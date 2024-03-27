@@ -1,8 +1,6 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
-# from dotenv import load_dotenv
 dotenv_path = os.path.join(basedir, '.env')
-# load_dotenv(dotenv_path)
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY') or 'hard to guess literal string of text'
@@ -19,7 +17,7 @@ class Config:
     RMS_MAIL_SENDER = 'Restaurant Management System Admin'
     RMS_ADMIN = os.getenv('RMS_ADMIN')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+        'sqlite://' + os.path.join(basedir, 'data-dev.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_DEBUG = True
 

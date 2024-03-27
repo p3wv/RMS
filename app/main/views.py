@@ -39,7 +39,54 @@ def RMS_index():
 
 @main.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    import sqlite3
+    
+    connection = sqlite3.connect('/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/app/data-dev.sqlite')
+    cursor = connection.cursor()
+
+
+
+    # table_name = 'orders'  # Replace with the actual table name
+    # drop_table_query = f"DROP TABLE {table_name}"
+
+    # cursor.execute(drop_table_query)
+    connection.commit()
+
+
+    query = """
+            SELECT id, items
+            FROM orders
+            """
+
+    cursor.execute(query)
+    fetched_data = cursor.fetchall()
+
+    orders = []
+    for row in fetched_data:
+        num_columns = len(row)
+        order_id = row[0]
+
+        order_items = row[num_columns - 1]
+
+        if order_items is None or not isinstance(order_items, str):
+            print(f"Skipping order {order_id} due to non-string items: {order_items}")
+            continue
+        else:
+            try:
+                order_items = json.loads(order_items)
+            except json.JSONDecodeError:
+                print(f"Skipping order {order_id} due to invalid JSON for items")
+                continue
+                
+            if order_items:
+                orders.append({
+                    "id": order_id,
+                    "items": order_items
+                })
+
+    connection.close()
+    
+    return render_template('dashboard.html', orders=orders)
 
 @main.route('/menu')
 def menu():
@@ -90,20 +137,19 @@ def add_to_cart():
 def order_confirmation():
     form = OrderForm()
     
-    cart_items_json = request.form.get('cart_items')
-    
-    if cart_items_json:
-        cart_items = json.loads(cart_items_json)
-    else:
-        cart_items = []
+    cart_items_json = request.form.get('items')
+    print('items:', cart_items_json)
 
-    total_amount = 0
-    for item in cart_items:
-        if item.get('price') and item.get('quantity'):
-            total_amount += item['price'] * item['quantity']
+    cart_items = json.loads(cart_items_json) if cart_items_json else []
+
+    total_amount = request.form.get('total_amount')
+    print(total_amount)
 
     if not total_amount:
         flash('Total amount not found')
+        return redirect(url_for('.cart'))
+    elif total_amount == 0:
+        flash('No items in cart!')
         return redirect(url_for('.cart'))
 
     if request.method == 'POST' and form.validate_on_submit():
@@ -111,14 +157,7 @@ def order_confirmation():
         name = form.name.data
         address = form.address.data
 
-        cart_items_json = request.form.get('cart_items')
-        if not cart_items_json:
-            flash('Cart items data not found', 'error')
-            return redirect(url_for('.cart'))
-
         try:
-            cart_items = json.loads(cart_items_json)
-
             order = Order(
                 email=email,
                 name=name,
@@ -131,6 +170,7 @@ def order_confirmation():
             db.session.add(order)
             db.session.commit()
 
+            print("asjhajdhsa:", cart_items)
             send_order_confirmation_email(email, cart_items)
                     
             session.pop('cart', None)
@@ -143,7 +183,7 @@ def order_confirmation():
                 current_app.logger.error('Error processing order: %s', str(e))
                 return jsonify({'error': str(e)}), 500
 
-    return render_template('order_confirmation.html', form=form, total_amount=total_amount)
+    return render_template('order_confirmation.html', cart_items=cart_items, total_amount=total_amount, form=form)
 
 
 @main.route('/ordered')
