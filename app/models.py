@@ -1,3 +1,4 @@
+from traitlets import default
 from . import db, login_manager
 from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -144,6 +145,22 @@ login_manager.anonymous_user = AnonymousUser
 
 class Order(db.Model):
     __tablename__ = 'orders'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(64), index=True)
+    address = db.Column(db.String(64))
+    name = db.Column(db.String(64))
+    total = db.Column(db.Float)
+    items = db.Column(db.String(1024))
+
+    def set_items(self, items):
+        self.items = json.dumps(items)
+
+    def get_items(self):
+        print(self.items)
+        return json.loads(self.items)
+    
+class OrderDone(db.Model):
+    __tablename__ = 'orders_done'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True)
     address = db.Column(db.String(64))

@@ -14,6 +14,7 @@ class OrderForm(FlaskForm):
     email = StringField('Your e-mail (we will use it for contact purposes only)', validators=[DataRequired(), Length(1, 64), Email()])
     total_amount = HiddenField()
     items = HiddenField()
+    # done = HiddenField()
     submit = SubmitField('Submit', render_kw=style)
 
 

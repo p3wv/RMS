@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from turtle import done
 from flask import current_app, flash, jsonify, render_template, session, redirect, url_for, request
 from flask_login import login_required, current_user
 
@@ -42,9 +43,10 @@ def RMS_index():
 
 # cursor.execute(drop_table_query)
 
+import sqlite3
+
 @main.route('/dashboard')
 def dashboard():
-    import sqlite3
     
     connection = sqlite3.connect('/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/app/data-dev.sqlite')
     cursor = connection.cursor()
@@ -82,11 +84,30 @@ def dashboard():
                 print(f"Skipping order {order_id} due to invalid JSON for items")
                 continue
 
-    print("Orders:", orders)
+    # print("Orders:", orders)
 
     connection.close()
     
     return render_template('dashboard.html', orders=orders)
+
+
+@main.route('/move_order/<int:order_id>', methods=['POST'])
+def move_order(order_id):
+    try:
+        connection = sqlite3.connect('/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/app/data-dev.sqlite')
+        cursor = connection.cursor()
+
+        # Move the order to the orders_done table
+        cursor.execute("INSERT INTO orders_done SELECT * FROM orders WHERE id = ?", (order_id,))
+        cursor.execute("DELETE FROM orders WHERE id = ?", (order_id,))
+
+        connection.commit()
+        connection.close()
+
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @main.route('/menu')
 def menu():
