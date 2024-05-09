@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from flask import current_app
 import json
+from datetime import timedelta
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -75,6 +76,10 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(64))
+    accounted_time = db.Column(db.Interval, default=timedelta())
+
+    def account_time(self, time_diff):
+        self.accounted_time += time_diff
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)

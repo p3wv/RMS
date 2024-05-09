@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap4/form.html" as wtf %}
 
 {% block title %}Finish your order{% endblock %}
 
@@ -108,7 +108,7 @@
         <form method="POST" id="order-form" action="{{ url_for('main.order_confirmation') }}">
             <input type="hidden" name="items" id="cart-items-input">
             {{ form.hidden_tag() }}
-            {{ wtf.quick_form(form) }} 
+            {{ wtf.render_form(form) }} 
             
         </form>
         

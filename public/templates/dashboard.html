@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+
 {% block title %}Dashboard{% endblock %}
 
 {% block page_content %}
@@ -63,38 +64,7 @@
 
     .page-header h1 {
         font-size: 32px;
-        color: #007bff;
-    }
-
-    .clock-in-button,
-    .clock-out-button {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .clock-in-button button,
-    .clock-out-button button {
-        padding: 10px 20px;
-        font-size: 18px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .clock-in-button button {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .clock-out-button button {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .clock-in-button button:hover,
-    .clock-out-button button:hover {
-        background-color: #0056b3;
+        color: #007bff; /* Changing font color */
     }
 
     .orders h2 {
@@ -114,7 +84,7 @@
     }
 
     .order-selector[type="checkbox"] {
-        transform: scale(1.5);
+        transform: scale(1.5); /* Increase checkbox size */
     }
 
     .orders tbody tr {
@@ -124,14 +94,6 @@
 
 <div class="page-header">
   <h1>Have a nice shift, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
-</div>
-
-<div class="clock-in-button" id="clock-in-section">
-    <button id="clock-in-button">Clock In</button>
-</div>
-
-<div class="clock-out-button" id="clock-out-section" style="display: none;">
-    <button id="clock-out-button">Clock Out</button>
 </div>
 
 <div class="orders">
@@ -174,6 +136,7 @@
                 const orderId = row.querySelector('.order-id').textContent;
                 
                 if (selector.checked) {
+                    // Send AJAX request to move the order to orders_done
                     fetch(`/move_order/${orderId}`, {
                         method: 'POST',
                         headers: {
@@ -185,36 +148,13 @@
                         if (!response.ok) {
                             throw new Error('Failed to move order.');
                         }
+                        // If successful, remove the row from the table
                         row.remove();
                     })
                     .catch(error => {
                         console.error('Error:', error);
                     });
                 }
-            });
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('clock-in-button').addEventListener('click', function () {
-            var clockInTime = new Date();
-
-            document.getElementById('clock-in-section').style.display = 'none';
-            document.getElementById('clock-out-section').style.display = 'block';
-
-            document.getElementById('clock-out-button').addEventListener('click', function () {
-                var clockOutTime = new Date();
-
-                var timeDiff = clockOutTime - clockInTime;
-
-                var hours = Math.floor(timeDiff / (1000 * 60 * 60));
-                var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-                alert('Time passed: ' + hours + ' hours ' + minutes + ' minutes ' + seconds + ' seconds');
-
-                document.getElementById('clock-out-section').style.display = 'none';
-                document.getElementById('clock-in-section').style.display = 'block';
             });
         });
     });

@@ -4,7 +4,6 @@ import click
 from app import create_app, db
 from app.models import User, Role, Permission
 from flask_migrate import Migrate, upgrade
-# from flask_sqlalchemy import SQLAlchemy
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
@@ -52,5 +51,4 @@ def test(coverage, test_names):
 @app.cli.command()
 def deploy():
     """Run deployment tasks."""
-    # migrate database to latest revision
     upgrade()

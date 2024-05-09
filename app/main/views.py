@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
-from turtle import done
 from flask import current_app, flash, jsonify, render_template, session, redirect, url_for, request
 from flask_login import login_required, current_user
+
+from app import render
 
 from ..email import send_order_confirmation_email
 from . import main
@@ -37,17 +38,10 @@ def RMS_index():
                            known=session.get('known', False),
                            current_time=datetime.utcnow())
 
-
-# table_name = 'orders'  # Replace with the actual table name
-# drop_table_query = f"DROP TABLE {table_name}"
-
-# cursor.execute(drop_table_query)
-
 import sqlite3
 
 @main.route('/dashboard')
 def dashboard():
-    
     connection = sqlite3.connect('/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/app/data-dev.sqlite')
     cursor = connection.cursor()
 
@@ -84,11 +78,37 @@ def dashboard():
                 print(f"Skipping order {order_id} due to invalid JSON for items")
                 continue
 
-    # print("Orders:", orders)
-
     connection.close()
     
     return render_template('dashboard.html', orders=orders)
+
+@main.route('/clock_in', methods=['POST'])
+def clock_in():
+    if current_user.is_authenticated:
+        session['clock_in_time'] = datetime.now()
+
+        current_user.accounted_time = timedelta()
+
+        db.session.commit()
+
+    return redirect(url_for('dashboard'))
+
+@main.route('/clock_out', methods=['POST'])
+def clock_out():
+    if current_user.is_authenticated:
+        clockInTime = session.get('clock_in_time')
+
+        if clockInTime:
+            clockOutTime = datetime.now()
+
+            timeDiff = clockOutTime - clockInTime
+
+            current_user.accounted_time += timeDiff
+
+            db.session.commit()
+
+
+    return redirect(url_for('dashboard'))
 
 
 @main.route('/move_order/<int:order_id>', methods=['POST'])
@@ -97,7 +117,6 @@ def move_order(order_id):
         connection = sqlite3.connect('/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/app/data-dev.sqlite')
         cursor = connection.cursor()
 
-        # Move the order to the orders_done table
         cursor.execute("INSERT INTO orders_done SELECT * FROM orders WHERE id = ?", (order_id,))
         cursor.execute("DELETE FROM orders WHERE id = ?", (order_id,))
 
@@ -108,6 +127,48 @@ def move_order(order_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@main.route('/previous_orders')
+def previous_orders():
+    connection = sqlite3.connect('/Users/dlaczegociasteczkochinskie/Desktop/INZYNIERKA/RMS/RMS/app/data-dev.sqlite')
+    cursor = connection.cursor()
+
+
+    connection.commit()
+
+
+    query = """
+            SELECT id, items
+            FROM orders_done
+            """
+
+    cursor.execute(query)
+    fetched_data = cursor.fetchall()
+
+    orders = []
+    for row in fetched_data:
+        num_columns = len(row)
+        order_id = row[0]
+
+        order_items = row[num_columns - 1]
+
+        if order_items is None or not isinstance(order_items, str):
+            print(f"Skipping order {order_id} due to non-string items: {order_items}")
+            continue
+        else:
+            try:
+                order_items = json.loads(order_items)
+                orders.append({
+                    "id": order_id,
+                    "items": order_items
+                })
+            except json.JSONDecodeError:
+                print(f"Skipping order {order_id} due to invalid JSON for items")
+                continue
+
+
+    connection.close()
+
+    return render_template('previous_orders.html', orders=orders)
 
 @main.route('/menu')
 def menu():
