@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
 import json
-from flask import current_app, flash, jsonify, render_template, session, redirect, url_for, request
+from flask import current_app, flash, jsonify, render_template, session, redirect, url_for, request, send_from_directory
 from flask_login import login_required, current_user
-
-from app import render
+from flask_socketio import SocketIO, emit
 
 from ..email import send_order_confirmation_email
 from . import main
@@ -11,6 +10,14 @@ from .forms import EditProfileForm, EditProfileAdminForm, NameForm, OrderForm
 from .. import db
 from ..models import Role, User, Order, CartItem
 from ..decorators import admin_required
+
+@main.route('/service-worker.js')
+def service_worker():
+    return send_from_directory('static/js', 'service-worker.js')
+
+@main.route('/manifest.json')
+def manifest():
+    return send_from_directory('static', 'manifest.json')
 
 @main.route('/')
 def index():
@@ -81,6 +88,17 @@ def dashboard():
     connection.close()
     
     return render_template('dashboard.html', orders=orders)
+
+socketio = SocketIO()
+
+@main.route('/chat')
+@login_required
+def chat():
+    return render_template('chat.html', username=current_user.username)
+
+@socketio.on('message')
+def handle_message(message):
+    emit('message', {'username': current_user.username, 'message': message}, broadcast=True)
 
 @main.route('/clock_in', methods=['POST'])
 def clock_in():

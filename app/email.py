@@ -3,8 +3,6 @@ from uu import Error
 from flask import current_app, render_template, render_template_string
 from flask_mail import Message
 from . import mail
-# from .models import Order
-# from .auth .views import order
 
 def send_email(to, subject, template, **kwargs):
     app = current_app._get_current_object() # type: ignore

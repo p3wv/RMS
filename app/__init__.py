@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_bootstrap import Bootstrap4
 from flask_mail import Mail
 from flask_moment import Moment

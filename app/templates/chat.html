@@ -1,29 +1,40 @@
 {% extends "base.html" %}
-
 {% block title %}Chat{% endblock %}
-
 {% block page_content %}
+<div id="chat-messages"></div>
+<form id="message-form">
+    <input type="text" id="message-input" autocomplete="off">
+    <button type="submit">Send</button>
+</form>
 
-<style>
-    .page-header {
-        margin-bottom: 20px;
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 10px;
-    }
-
-    .page-header h1 {
-        font-size: 32px;
-        color: #007bff;
-    }
-</style>
-
-<div class="page-header">
-  <h1>Have a nice shift, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
-</div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
 <script>
-    
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    function addMessageToChat(message, isCurrentUser) {
+        var chatMessages = document.getElementById("chat-messages");
+        var messageElement = document.createElement("div");
+        if (isCurrentUser) {
+            messageElement.classList.add("current-user-message");
+        }
+        messageElement.textContent = message;
+        chatMessages.appendChild(messageElement);
+    }
+
+    document.getElementById("message-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var messageInput = document.getElementById("message-input");
+        var message = messageInput.value.trim();
+        if (message !== "") {
+            socket.emit('message', message);
+            addMessageToChat("You: " + message, true);
+            messageInput.value = "";
+        }
+    });
+
+    socket.on('message', function(data) {
+        addMessageToChat(data.username + ": " + data.message, false);
+    });
 </script>
-    
 
 {% endblock %}
