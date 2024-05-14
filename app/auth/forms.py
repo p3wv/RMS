@@ -1,8 +1,6 @@
 from ast import Pass
 from curses.ascii import EM
-from sqlite3 import DataError
 from flask_wtf import FlaskForm
-from h11 import Data
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 from ..models import User

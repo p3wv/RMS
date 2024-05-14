@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% import "bootstrap4/form.html" as wtf %}
+
+{% block title %}Previous Orders{% endblock %}
+
+{% block page_content %}
+
+<style>
+    .orders table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .orders th, .orders td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+        color: white;
+        font-style: italic;
+    }
+
+    .orders th {
+        background-color: #f2f2f2;
+        color: black;
+    }
+
+    .order-selector {
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .order-selector[type="checkbox"]:checked + td {
+        opacity: 0;
+    }
+
+    .fade-out {
+        animation: fadeOut 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    .orders td:nth-child(2) {
+        font-weight: bold;
+    }
+
+    .orders td:nth-child(3) {
+        font-style: italic;
+        color: #007bff;
+    }
+
+    .page-header {
+        margin-bottom: 20px;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+    }
+
+    .page-header h1 {
+        font-size: 32px;
+        color: #007bff;
+    }
+
+    .orders h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: white;
+        font-style: italic;
+    }
+
+    .orders table {
+        border: 2px solid #007bff;
+        border-radius: 10px;
+    }
+
+    .orders th, .orders td {
+        border: none;
+    }
+
+    .order-selector[type="checkbox"] {
+        transform: scale(1.5);
+    }
+
+    .orders tbody tr {
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+
+<div class="page-header">
+  <h1>Hi, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+</div>
+
+<div class="orders">
+  <h2>All orders:</h2>
+    <br>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Items</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+            {% if order['items'] %}
+            <tr>
+                <td class="order-id">{{ order.id }}</td>
+                <td>
+                    <ul>
+                        {% for item in order['items'] %}
+                        <li>{{ item['productName'] }}, {{ item['quantity'] }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>    
+    </table>
+</div>
+
+<script>
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     const orderSelectors = document.querySelectorAll('.order-selector');
+    //     orderSelectors.forEach(function(selector) {
+    //         selector.addEventListener('change', function() {
+                
+    //             if (selector.checked) {
+    //                 fetch(`/move_order/${orderId}`, {
+    //                     method: 'POST',
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                     },
+    //                     body: JSON.stringify({ order_id: orderId }),
+    //                 })
+    //                 .then(response => {
+    //                     if (!response.ok) {
+    //                         throw new Error('Failed to move order.');
+    //                     }
+    //                     row.remove();
+    //                 })
+    //                 .catch(error => {
+    //                     console.error('Error:', error);
+    //                 });
+    //             }
+    //         });
+    //     });
+    // });
+</script>
+    
+
+{% endblock %}

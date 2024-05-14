@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import "bootstrap4/form.html" as wtf %}
+
+{% block title %}Restaurant Management System{% endblock %}
+
+{% block page_content %}
+<div class="page_header">
+    <h1>Login</h1>
+</div>
+<div class="col-md-4">
+    {{ wtf.render_form(form) }}
+</div>
+
+<p>
+    Nowy użytkownik?
+    <a href="{{ url_for('auth.register') }}">
+        Kliknij tutaj, aby się zarejestrować
+    </a>
+</p>
+{% endblock %}

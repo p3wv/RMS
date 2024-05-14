@@ -103,6 +103,8 @@ def clock_out():
 
             timeDiff = clockOutTime - clockInTime
 
+            print(timeDiff)
+
             current_user.accounted_time += timeDiff
 
             db.session.commit()

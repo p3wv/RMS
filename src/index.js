@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getDatabase, ref } from "firebase/database";
 
 const firebaseConfig = {
     apiKey: "AIzaSyD6k3nIjIAfmhVbLKJWDz8qylxpJOvI0p4",
@@ -11,3 +12,25 @@ const firebaseConfig = {
 };
 
   const app = initializeApp(firebaseConfig);
+  const db = getDatabase();
+  const reference =ref (db, 'previous_orders/')
+
+  function writeOrderData(id, email, address, name, total, items) {
+    const db = getDatabase();
+    const reference = ref(db, 'previous_orders/' + id);
+
+    set(reference, {
+      id: id,
+      email: email,
+      address: address,
+      name: name,
+      total: total,
+      items: items
+    });
+  }
+
+writeOrderData()
+
+// firebase.database().ref(/* path */).set({
+//  /* attribute: value */
+// });
