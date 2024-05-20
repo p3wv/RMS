@@ -1,15 +1,19 @@
 {% import "bootstrap4/form.html" as wtf %}
 
-{% block head %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RMS{% endblock %}</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<link rel="manifest" href="gs://rms-pwa-f5c66.appspot.com/manifest.json">
+    <link rel="manifest" href="gs://rms-pwa-f5c66.appspot.com/manifest.json">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="shortcut icon" href="gs://rms-pwa-f5c66.appspot.com/favicon2.png" type="image/x-icon">
-<link rel="icon" href="gs://rms-pwa-f5c66.appspot.com/favicon2.png" type="image/x-icon">
+    <link rel="shortcut icon" href="gs://rms-pwa-f5c66.appspot.com/favicon1.png" type="image/x-icon">
+    <link rel="icon" href="gs://rms-pwa-f5c66.appspot.com/favicon1.pngg" type="image/x-icon">
+</head>
 
 <script>
   if ('serviceWorker' in navigator) {
@@ -36,17 +40,6 @@
         color: rgb(163, 50, 50);
     }
 
-    .cart-notification {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #4CAF50;
-        color: white;
-        border-radius: 50%;
-        padding: 5px 10px;
-        font-size: 12px;
-    }
-
     .navbar {
         font-size: 16px;
     }
@@ -60,13 +53,13 @@
       max-height: 12.5vh;
     }
 </style>
-{% endblock %}
+<body>
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: transparent;">
   <div class="container">
     <div style="text-align: center;">
       <a class="navbar-brand" href="{{ url_for('main.RMS_index') }}">
-        <img src="https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/logo_navbar.png?alt=media&token=3ada3050-567c-48d4-8739-cc2a8a4c3c49" class="img-fluid" alt="RMS">
+        <img src="https://firebasestorage.googleapis.com/v0/b/rms-pwa-f5c66.appspot.com/o/logo_navbar.png?alt=media&token=3ada3050-567c-48d4-8739-cc2a8a4c3c49" class="img-fluid" alt="RMS" style="max-width: 25vw; max-height: 12.5vh;">
       </a>
     </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,9 +121,13 @@
 </div>
 {% endblock %}
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
 {% block scripts %}
 
 {{ moment.include_moment() }}
 {% endblock %}
+</body>
+</html>

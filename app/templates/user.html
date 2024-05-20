@@ -2,6 +2,12 @@
 
 {% block title %}RMS - {{ user.username }}{% endblock %}
 
+<!-- <style>
+    .btn-default {
+        color: aliceblue;
+    }
+</style> -->
+
 {% block page_content %}
 <div class="page-header">
     <div class="profile-header">
@@ -18,7 +24,7 @@
         {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
         <p>
             {% if user == current_user %}
-            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}" style="color: aliceblue;">Edit Profile</a>
             {% endif %}
             {% if current_user.is_administrator() %}
             <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
