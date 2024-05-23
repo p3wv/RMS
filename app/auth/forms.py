@@ -4,6 +4,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 from ..models import User
+from google.cloud import firestore
+
+db = firestore.Client()
+
 
 class LoginForm(FlaskForm):
     email = StringField('E-mail', validators=[DataRequired(), Length(1,64), Email()])
@@ -22,19 +26,21 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Zarejestruj')
 
     def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
+        user_ref = db.collection('users').where('email', '==', field.data).stream()
+        if any(user_ref):
             raise ValidationError('Ten e-mail należy do już zarejestrowanego użytkownika!')
-        
+
     def validate_username(self, field):
-        if User.query.filter_by(username=field.data).first():
+        user_ref = db.collection('users').where('username', '==', field.data).stream()
+        if any(user_ref):
             raise ValidationError('Ta nazwa użytkownika jest już zajęta.')
+
         
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('Old password', validators=[DataRequired()])
     password = PasswordField('New password', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match')])
-    password2 = PasswordField('Confirm new password',
-                              validators=[DataRequired()])
+    password2 = PasswordField('Confirm new password', validators=[DataRequired()])
     submit = SubmitField('Update password')
 
 class PasswordResetRequestForm(FlaskForm):
@@ -53,5 +59,6 @@ class ChangeEmailForm(FlaskForm):
     submit = SubmitField('Update email address')
 
     def validate_email(self, field):
-        if User.query.filter_by(email=field.data.lower()).first():
+        user_ref = db.collection('users').where('email', '==', field.data.lower()).stream()
+        if any(user_ref):
             raise ValidationError('Email already in use')

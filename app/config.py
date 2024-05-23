@@ -20,6 +20,7 @@ class Config:
         'sqlite://' + os.path.join(basedir, 'data-dev.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_DEBUG = True
+    # GOOGLE_APPLICATION_CREDENTIALS = os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/path/to/service-account-file.json'
 
     @staticmethod
     def init_app(app):
