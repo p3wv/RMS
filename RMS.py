@@ -1,9 +1,11 @@
 import os
 import sys
 import click
-from app import create_app, db
+from app import create_app
 from app.models import User, Role, Permission
 from flask_migrate import Migrate, upgrade
+from google.cloud import firestore
+from .app import db
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
@@ -11,11 +13,7 @@ if os.environ.get('FLASK_COVERAGE'):
     COV = coverage.coverage(branch=True, include='app/*')
     COV.start()
 
-
 app = create_app()
-with app.app_context():
-    db.create_all()
-migrate = Migrate(app, db)
 
 @app.shell_context_processor
 def make_shell_context():
@@ -23,7 +21,7 @@ def make_shell_context():
 
 @app.cli.command()
 @click.option('--coverage/--no-coverage', default=False,
-              help='Run the tests ?with coverage?')
+              help='Run the tests with coverage')
 @click.argument('test_names', nargs=-1)
 def test(coverage, test_names):
     if coverage and not os.environ.get('FLASK_COVERAGE'):
@@ -45,10 +43,9 @@ def test(coverage, test_names):
         basedir = os.path.abspath(os.path.dirname(__file__))
         covdir = os.path.join(basedir, 'tmp/coverage')
         COV.html_report(directory=covdir)
-        print('HTML ver: file://%s/index.html' % covdir)
+        print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
 
 @app.cli.command()
 def deploy():
-    """Run deployment tasks."""
     upgrade()
