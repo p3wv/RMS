@@ -1,6 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref } from "firebase/database";
+import { createRoot } from 'react-dom/client';
+
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyD6k3nIjIAfmhVbLKJWDz8qylxpJOvI0p4",
